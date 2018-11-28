@@ -1,14 +1,16 @@
 <template>
-    <div>test</div>
+  <div>
+    <video autoplay></video>
+  </div>
 </template>
 
 <script>
 export default {
-    name: 'VideoPlayer',
-    data: function () {
-        return {};
-    },
-    props: {}
+  name: 'VideoPlayer',
+  data() {
+    return {};
+  },
+  props: {}
 };
 </script>
 
