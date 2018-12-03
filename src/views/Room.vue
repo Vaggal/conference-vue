@@ -5,7 +5,7 @@
         v-show="error"
       >Allow the browser to use your web cam and after that share the URL from the address bar with the people you want to talk with.</span>
       <br>
-      <span v-bind="error"></span>
+      <span>{{error}}</span>
     </div>
 
     <div class="video-wrapper">
@@ -28,19 +28,19 @@ import $ from 'jquery';
 
 import Room from '@/modules/Room';
 import VideoStream from '@/modules/VideoStream';
+import CustomAdapter from '@/modules/CustomAdapter'; // TODO: replace with adapter.js package
 
 export default {
   name: 'room',
-  data() {
+  data: function () {
     return {
-      error: true,
+      error: '',
       peers: []
     };
   },
-  methods() {
-    return {};
+  methods: {
   },
-  beforeMounted() {
+  beforeMount() {
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
       this.error =
         'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';

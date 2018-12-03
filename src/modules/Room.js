@@ -1,5 +1,6 @@
 import Io from '@/modules/Io';
 import Config from '@/modules/Config';
+import EventEmitter from 'wolfy87-eventemitter';
 
 var iceConfig = {
     'iceServers': [{
@@ -136,8 +137,9 @@ var api = {
     stream = s;
   }
 };
-EventEmitter.call(api);
-Object.setPrototypeOf(api, EventEmitter.prototype);
+
+let eventEmitter = new EventEmitter();
+Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter))
 
 addHandlers(socket);
 
