@@ -32,7 +32,7 @@ import CustomAdapter from '@/modules/CustomAdapter'; // TODO: replace with adapt
 
 export default {
   name: 'room',
-  data: function () {
+  data() {
     return {
       error: '',
       peers: []
@@ -50,11 +50,11 @@ export default {
     var stream;
 
     VideoStream.get().then(
-      function (s) {
+      (s) => {
         stream = s;
         Room.init(stream);
         if (!this.$route.params.roomId) {
-          Room.createRoom().then(function (roomId) {
+          Room.createRoom().then((roomId) => {
             this.$router.push({
               name: 'active-room',
               params: { roomId: roomId }
@@ -68,12 +68,12 @@ export default {
         videoLocal.srcObject = stream;
         videoLocal.play();
       },
-      function () {
+      () => {
         this.error =
           'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
       }
     );
-    Room.on('peer.stream', function (peer) {
+    Room.on('peer.stream', (peer) => {
       console.log('Client connected, adding new stream');
       this.peers.push({
         id: peer.id,
@@ -86,9 +86,9 @@ export default {
         peerVideo.srcObject = this.peers[peerIndex].stream;
       }, 3000);
     });
-    Room.on('peer.disconnected', function (peer) {
+    Room.on('peer.disconnected', (peer) => {
       console.log('Client disconnected, removing stream');
-      this.peers = this.peers.filter(function (p) {
+      this.peers = this.peers.filter((p) => {
         return p.id !== peer.id;
       });
     });
