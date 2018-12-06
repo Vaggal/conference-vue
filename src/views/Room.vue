@@ -10,7 +10,7 @@
 
     <div class="video-wrapper">
       <div class="col-md-4" v-for="(peer, key) in peers" :key="key">
-        <video-player></video-player>
+        <video-player v-bind:peer-index="key" v-bind:peer-stream="peer.stream"></video-player>
       </div>
     </div>
 
@@ -64,9 +64,8 @@ export default {
           Room.joinRoom(this.$route.params.roomId);
         }
 
-        let videoLocal = $('#videoLocal')[0];
+        let videoLocal = document.querySelectorAll('#videoLocal')[0];
         videoLocal.srcObject = stream;
-        videoLocal.play();
       },
       () => {
         this.error =
@@ -79,12 +78,6 @@ export default {
         id: peer.id,
         stream: peer.stream
       });
-
-      setTimeout(() => {
-        var peerIndex = this.peers.length - 1;
-        var peerVideo = $('#peerVideo' + peerIndex)[0];
-        peerVideo.srcObject = this.peers[peerIndex].stream;
-      }, 3000);
     });
     Room.on('peer.disconnected', (peer) => {
       console.log('Client disconnected, removing stream');
