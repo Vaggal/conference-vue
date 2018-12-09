@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <div style="padding: 17px; padding-top: 0px;">
+  <div class="home container-fluid">
+    <div class="row">
       <span
         v-show="error"
       >Allow the browser to use your web cam and after that share the URL from the address bar with the people you want to talk with.</span>
@@ -8,15 +8,15 @@
       <span>{{error}}</span>
     </div>
 
-    <div class="video-wrapper">
-      <div class="col-md-4" v-for="(peer, key) in peers" :key="key">
-        <video-player v-bind:peer-index="key" v-bind:peer-stream="peer.stream"></video-player>
+    <div class="row video-wrapper">
+      <div class="col-sm d-flex justify-content-center">
+        <video id="videoLocal" autoplay muted></video>
       </div>
     </div>
 
-    <div class="video-wrapper">
-      <div class="col-md-2">
-        <video id="videoLocal" autoplay muted></video>
+    <div class="row video-wrapper">
+      <div class="col-sm d-flex justify-content-center" v-for="(peer, key) in peers" :key="key">
+        <video-player v-bind:peer-index="key" v-bind:peer-stream="peer.stream"></video-player>
       </div>
     </div>
   </div>
@@ -25,6 +25,7 @@
 <script>
 import VideoPlayer from '@/components/VideoPlayer.vue';
 import $ from 'jquery';
+import 'bootstrap';
 
 import Room from '@/modules/Room';
 import VideoStream from '@/modules/VideoStream';
@@ -64,7 +65,7 @@ export default {
           Room.joinRoom(this.$route.params.roomId);
         }
 
-        let videoLocal = document.querySelectorAll('#videoLocal')[0];
+        let videoLocal = document.getElementById('videoLocal');
         videoLocal.srcObject = stream;
       },
       () => {
@@ -89,3 +90,7 @@ export default {
   components: { VideoPlayer }
 };
 </script>
+
+<style lang='scss'>
+
+</style>
