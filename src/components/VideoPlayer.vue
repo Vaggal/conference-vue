@@ -17,7 +17,7 @@ export default {
     peerStream: MediaStream
   },
   mounted() {
-    let peerVideoElement = document.querySelectorAll('#' + this.peerIndexId)[0];
+    let peerVideoElement = document.getElementById(this.peerIndexId);
     peerVideoElement.srcObject = this.peerStream;
   }
 };

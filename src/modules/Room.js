@@ -15,80 +15,96 @@ function getPeerConnection(id) {
   if (peerConnections[id]) {
     return peerConnections[id];
   }
-  var pc = new RTCPeerConnection(iceConfig);
-  peerConnections[id] = pc;
-  pc.addStream(stream);
-  pc.onicecandidate = function (evnt) {
+  var peerConnection = new RTCPeerConnection(iceConfig);
+  peerConnections[id] = peerConnection;
+  peerConnection.addStream(stream);
+  peerConnection.onicecandidate = function (event) {
     socket.emit('msg', {
       by: currentId,
       to: id,
-      ice: evnt.candidate,
+      ice: event.candidate,
       type: 'ice'
     });
   };
-  pc.onaddstream = function (evnt) {
+
+  // TODO: replace with 'ontrack'
+  peerConnection.onaddstream = function (event) {
     console.log('Received new stream');
     api.trigger('peer.stream', [{
       id: id,
-      stream: evnt.stream
+      stream: event.stream
     }]);
   };
-  return pc;
+  return peerConnection;
 }
 
 function makeOffer(id) {
-  var pc = getPeerConnection(id);
-  pc.createOffer(function (sdp) {
-    pc.setLocalDescription(sdp);
+  var peerConnection = getPeerConnection(id);
+
+  // Native WebRTC method: https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer
+  peerConnection.createOffer({
+    mandatory: {
+      offerToReceiveVideo: true,
+      offerToReceiveAudio: true
+    }
+  }).then((sdp) => {
+    peerConnection.setLocalDescription(sdp);
     console.log('Creating an offer for', id);
+
     socket.emit('msg', {
       by: currentId,
       to: id,
       sdp: sdp,
       type: 'sdp-offer'
     });
-  }, function (e) {
+  }).catch((e) => {
     console.log(e);
-  }, {
-    mandatory: {
-      offerToReceiveVideo: true,
-      offerToReceiveAudio: true
-    }
   });
 }
 
 function handleMessage(data) {
-  var pc = getPeerConnection(data.by);
+  var peerConnection = getPeerConnection(data.by);
+
   switch (data.type) {
     case 'sdp-offer':
-      pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
+      var rtcSessionDescription = new RTCSessionDescription(data.sdp);
+
+      peerConnection.setRemoteDescription(rtcSessionDescription).then(() => {
         console.log('Setting remote description by offer');
-        pc.createAnswer(function (sdp) {
-          pc.setLocalDescription(sdp);
+
+        peerConnection.createAnswer().then((sdp) => {
+          peerConnection.setLocalDescription(sdp);
+
           socket.emit('msg', {
             by: currentId,
             to: data.by,
             sdp: sdp,
             type: 'sdp-answer'
           });
-        }, function (e) {
+        }).catch((e) => {
           console.log(e);
         });
-      }, function (e) {
+      }).catch((e) => {
         console.log(e);
       });
+
       break;
     case 'sdp-answer':
-      pc.setRemoteDescription(new RTCSessionDescription(data.sdp), function () {
+      var rtcSessionDescription = new RTCSessionDescription(data.sdp);
+
+      peerConnection.setRemoteDescription(rtcSessionDescription).then(() => {
         console.log('Setting remote description by answer');
-      }, function (e) {
+      }).catch((e) => {
         console.error(e);
       });
+
       break;
     case 'ice':
       if (data.ice) {
         console.log('Adding ice candidates');
-        pc.addIceCandidate(new RTCIceCandidate(data.ice));
+
+        let rtcIceCandidate = new RTCIceCandidate(data.ice);
+        peerConnection.addIceCandidate(rtcIceCandidate);
       }
       break;
   }
@@ -101,9 +117,11 @@ function addHandlers(socket) {
   socket.on('peer.connected', function (params) {
     makeOffer(params.id);
   });
+
   socket.on('peer.disconnected', function (data) {
     api.trigger('peer.disconnected', [data]);
   });
+
   socket.on('msg', function (data) {
     handleMessage(data);
   });

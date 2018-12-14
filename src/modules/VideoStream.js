@@ -2,17 +2,18 @@ var stream;
 
 let get = function () {
   let getUserMediaPromise = new Promise((resolve, reject) => {
+    // The if clause should be useful but i have not figured out yet for what :P
     if (stream) {
       resolve(stream);
     } else {
-      navigator.getUserMedia({
+      navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true
-      }, function (s) {
-        stream = s;
+      }).then((mediaStream) => {
+        stream = mediaStream;
         resolve(stream);
-      }, function (e) {
-        reject(e);
+      }).catch((error) => {
+        reject(error);
       });
     }
   });
