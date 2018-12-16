@@ -64,10 +64,11 @@ function makeOffer(id) {
 
 function handleMessage(data) {
   var peerConnection = getPeerConnection(data.by);
+  var rtcSessionDescription;
 
   switch (data.type) {
     case 'sdp-offer':
-      var rtcSessionDescription = new RTCSessionDescription(data.sdp);
+      rtcSessionDescription = new RTCSessionDescription(data.sdp);
 
       peerConnection.setRemoteDescription(rtcSessionDescription).then(() => {
         console.log('Setting remote description by offer');
@@ -90,7 +91,7 @@ function handleMessage(data) {
 
       break;
     case 'sdp-answer':
-      var rtcSessionDescription = new RTCSessionDescription(data.sdp);
+      rtcSessionDescription = new RTCSessionDescription(data.sdp);
 
       peerConnection.setRemoteDescription(rtcSessionDescription).then(() => {
         console.log('Setting remote description by answer');
