@@ -17,6 +17,7 @@
     "socket.io": "^1.7.4",
     "vue": "^2.5.21",
     "vue-router": "^3.0.1",
+    "webrtc-adapter": "^7.1.1",
     "wolfy87-eventemitter": "^5.2.5"
   },
   "devDependencies": {

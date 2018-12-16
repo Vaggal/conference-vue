@@ -29,7 +29,6 @@ import 'bootstrap';
 
 import Room from '@/modules/Room';
 import VideoStream from '@/modules/VideoStream';
-import CustomAdapter from '@/modules/CustomAdapter'; // TODO: replace with adapter.js package
 
 export default {
   name: 'room',
