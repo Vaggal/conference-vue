@@ -3,21 +3,32 @@ import Config from '@/modules/Config';
 import EventEmitter from 'wolfy87-eventemitter';
 
 var iceConfig = {
-    'iceServers': [{
-      'url': 'stun:stun.l.google.com:19302'
-    }]
-  },
-  peerConnections = {},
-  currentId, roomId,
-  stream;
+  'iceServers': [{
+    'url': 'stun:stun.l.google.com:19302'
+  }]
+};
+
+var peerConnections = {};
+var currentId;
+var roomId;
+var localStream;
 
 function getPeerConnection(id) {
   if (peerConnections[id]) {
     return peerConnections[id];
+  } else {
+    return createNewPeerConnection(id);
   }
+}
+
+function createNewPeerConnection(id) {
   var peerConnection = new RTCPeerConnection(iceConfig);
   peerConnections[id] = peerConnection;
-  peerConnection.addStream(stream);
+
+  localStream.getTracks().forEach((track) => {
+    peerConnection.addTrack(track, localStream);
+  });
+
   peerConnection.onicecandidate = function (event) {
     socket.emit('msg', {
       by: currentId,
@@ -27,14 +38,13 @@ function getPeerConnection(id) {
     });
   };
 
-  // TODO: replace with 'ontrack'
-  peerConnection.onaddstream = function (event) {
-    console.log('Received new stream');
-    api.trigger('peer.stream', [{
+  peerConnection.ontrack = function (rtcTrackEvent) {
+    api.trigger('peer.track', [{
       id: id,
-      stream: event.stream
+      track: rtcTrackEvent.track
     }]);
-  };
+  }
+
   return peerConnection;
 }
 
@@ -111,8 +121,8 @@ function handleMessage(data) {
   }
 }
 
-var socket = Io.connect(Config.SIGNALIG_SERVER_URL),
-  connected = false;
+var socket = Io.connect(Config.SIGNALIG_SERVER_URL);
+var connected = false;
 
 function addHandlers(socket) {
   socket.on('peer.connected', function (params) {
@@ -152,12 +162,12 @@ var api = {
 
     return initPromise;
   },
-  init: function (s) {
-    stream = s;
+  init: function (stream) {
+    localStream = stream;
   }
 };
 
-let eventEmitter = new EventEmitter();
+var eventEmitter = new EventEmitter();
 Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter))
 
 addHandlers(socket);

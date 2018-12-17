@@ -28,7 +28,7 @@ import $ from 'jquery';
 import 'bootstrap';
 
 import Room from '@/modules/Room';
-import VideoStream from '@/modules/VideoStream';
+import LocalVideoStream from '@/modules/LocalVideoStream';
 
 export default {
   name: 'room',
@@ -47,37 +47,54 @@ export default {
       return;
     }
 
-    var stream;
+    var localStream;
 
-    VideoStream.get().then(
-      (s) => {
-        stream = s;
-        Room.init(stream);
-        if (!this.$route.params.roomId) {
-          Room.createRoom().then((roomId) => {
-            this.$router.push({
-              name: 'active-room',
-              params: { roomId: roomId }
-            });
+    LocalVideoStream.get().then((stream) => {
+      localStream = stream;
+      Room.init(localStream);
+
+      if (!this.$route.params.roomId) {
+        Room.createRoom().then((roomId) => {
+          this.$router.push({
+            name: 'active-room',
+            params: { roomId: roomId }
           });
-        } else {
-          Room.joinRoom(this.$route.params.roomId);
-        }
+        });
+      } else {
+        Room.joinRoom(this.$route.params.roomId);
+      }
 
-        let videoLocal = document.getElementById('videoLocal');
-        videoLocal.srcObject = stream;
-      },
+      let videoLocal = document.getElementById('videoLocal');
+      videoLocal.srcObject = localStream;
+    },
       () => {
         this.error =
           'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
       }
     );
-    Room.on('peer.stream', (peer) => {
-      console.log('Client connected, adding new stream');
-      this.peers.push({
-        id: peer.id,
-        stream: peer.stream
+    Room.on('peer.track', (peer) => {
+      let isNewPeer = true;
+
+      this.peers.forEach((existingPeer) => {
+        // Peer already exists so we just add the track to their MediaStream object
+        if (existingPeer.id === peer.id) {
+          isNewPeer = false;
+          console.log('Adding new track for client');
+          existingPeer.stream.addTrack(peer.track);
+        }
       });
+
+      // Peer is new so we create their MediaStream, add the first track and update the peers list
+      if (isNewPeer) {
+        console.log('Adding new client and first track');
+        let peerMediaStream = new MediaStream();
+        peerMediaStream.addTrack(peer.track);
+
+        this.peers.push({
+          id: peer.id,
+          stream: peerMediaStream
+        });
+      }
     });
     Room.on('peer.disconnected', (peer) => {
       console.log('Client disconnected, removing stream');
@@ -91,5 +108,4 @@ export default {
 </script>
 
 <style lang='scss'>
-
 </style>
