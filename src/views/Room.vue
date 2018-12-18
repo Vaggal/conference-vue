@@ -8,6 +8,10 @@
       <span>{{error}}</span>
     </div>
 
+    <div v-for="(peer, key) in peers" :key="key">
+      <peer-thumbnail></peer-thumbnail>
+    </div>
+
     <div class="row video-wrapper">
       <div class="col-sm d-flex justify-content-center">
         <video id="videoLocal" autoplay muted></video>
@@ -24,6 +28,7 @@
 
 <script>
 import VideoPlayer from '@/components/VideoPlayer.vue';
+import PeerThumbnail from "@/components/PeerThumbnail.vue";
 import $ from 'jquery';
 import 'bootstrap';
 
@@ -103,7 +108,10 @@ export default {
       });
     });
   },
-  components: { VideoPlayer }
+  components: {
+    VideoPlayer,
+    PeerThumbnail
+  }
 };
 </script>
 
