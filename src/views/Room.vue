@@ -8,8 +8,10 @@
       <span>{{error}}</span>
     </div>
 
-    <div v-for="(peer, key) in peers" :key="key">
-      <peer-thumbnail></peer-thumbnail>
+    <div class="row justify-content-center">
+      <div class="col-xs-auto" v-for="(peer, key) in peers" :key="key">
+        <peer-thumbnail></peer-thumbnail>
+      </div>
     </div>
 
     <div class="row video-wrapper">
@@ -28,7 +30,7 @@
 
 <script>
 import VideoPlayer from '@/components/VideoPlayer.vue';
-import PeerThumbnail from "@/components/PeerThumbnail.vue";
+import PeerThumbnail from '@/components/PeerThumbnail.vue';
 import $ from 'jquery';
 import 'bootstrap';
 
@@ -47,8 +49,7 @@ export default {
   },
   beforeMount() {
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
-      this.error =
-        'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
+      this.error = 'WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.';
       return;
     }
 
@@ -71,12 +72,10 @@ export default {
 
       let videoLocal = document.getElementById('videoLocal');
       videoLocal.srcObject = localStream;
-    },
-      () => {
-        this.error =
-          'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
-      }
-    );
+    }, () => {
+      this.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
+    });
+
     Room.on('peer.track', (peer) => {
       let isNewPeer = true;
 
@@ -101,6 +100,7 @@ export default {
         });
       }
     });
+
     Room.on('peer.disconnected', (peer) => {
       console.log('Client disconnected, removing stream');
       this.peers = this.peers.filter((p) => {
