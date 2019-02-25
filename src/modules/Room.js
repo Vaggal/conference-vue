@@ -3,8 +3,8 @@ import Config from '@/modules/Config';
 import EventEmitter from 'wolfy87-eventemitter';
 
 var iceConfig = {
-  'iceServers': [{
-    'url': 'stun:stun.l.google.com:19302'
+  iceServers: [{
+    url: 'stun:stun.l.google.com:19302'
   }]
 };
 
@@ -72,7 +72,11 @@ function makeOffer(id) {
   });
 }
 
-function handleMessage(data) {
+/**
+ * Handles messages related to SDP and ICE
+ * @param {String} data
+ */
+function handleSocketMessage(data) {
   var peerConnection = getPeerConnection(data.by);
   var rtcSessionDescription;
 
@@ -124,17 +128,17 @@ function handleMessage(data) {
 var socket = Io.connect(Config.SIGNALIG_SERVER_URL);
 var connected = false;
 
-function addHandlers(socket) {
-  socket.on('peer.connected', function (params) {
-    makeOffer(params.id);
+function addSocketHandlers(socket) {
+  socket.on('peer.connected', function (peer) {
+    makeOffer(peer.id);
   });
 
-  socket.on('peer.disconnected', function (data) {
-    api.trigger('peer.disconnected', [data]);
+  socket.on('peer.disconnected', function (peer) {
+    api.trigger('peer.disconnected', [peer]);
   });
 
   socket.on('msg', function (data) {
-    handleMessage(data);
+    handleSocketMessage(data);
   });
 }
 
@@ -170,6 +174,6 @@ var api = {
 var eventEmitter = new EventEmitter();
 Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter))
 
-addHandlers(socket);
+addSocketHandlers(socket);
 
 export default api;
