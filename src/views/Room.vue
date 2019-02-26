@@ -15,7 +15,7 @@
     </div>
 
     <div class="row video-wrapper">
-      <div class="col-sm d-flex justify-content-center">
+      <div class="col-sm">
         <video id="videoLocal" autoplay muted></video>
       </div>
     </div>
@@ -31,10 +31,12 @@
 <script>
 import VideoPlayer from '@/components/VideoPlayer.vue';
 import PeerThumbnail from '@/components/PeerThumbnail.vue';
+
 import $ from 'jquery';
 import 'bootstrap';
 
 import Room from '@/modules/Room';
+import InteractiveVideo from '@/modules/InteractiveVideo';
 import LocalVideoStream from '@/modules/LocalVideoStream';
 
 export default {
@@ -84,6 +86,7 @@ export default {
         if (existingPeer.id === peer.id) {
           isNewPeer = false;
           console.log('Adding new track for client');
+          //peer.track.enabled = false; // We need the stream to be disable by default
           existingPeer.stream.addTrack(peer.track);
         }
       });
@@ -108,6 +111,10 @@ export default {
       });
     });
   },
+  mounted() {
+    let videoLocalElement = document.getElementById('videoLocal');
+    InteractiveVideo.setup(videoLocalElement);
+  },
   components: {
     VideoPlayer,
     PeerThumbnail
@@ -116,4 +123,11 @@ export default {
 </script>
 
 <style lang='scss'>
+.home {
+  height: 100vh;
+  background: #9e0000;
+}
+.video-wrapper {
+  background: black;
+}
 </style>
