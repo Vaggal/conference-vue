@@ -9,7 +9,12 @@
     </div>
 
     <div class="row justify-content-center">
-      <div class="col-xs-auto" v-for="(peer, key) in peers" :key="key">
+      <div
+        class="col-xs-auto"
+        v-for="(peer, key) in peers"
+        :key="key"
+        @click="activatePeerStream(key)"
+      >
         <peer-thumbnail></peer-thumbnail>
       </div>
     </div>
@@ -18,11 +23,12 @@
       <div class="col-sm">
         <video id="videoLocal" autoplay muted></video>
       </div>
-    </div>
-
-    <div class="row video-wrapper">
-      <div class="col-sm d-flex justify-content-center" v-for="(peer, key) in peers" :key="key">
-        <video-player v-bind:peer-index="key" v-bind:peer-stream="peer.stream"></video-player>
+      <div class="col-sm">
+        <video-player
+          v-if="activePeerExists"
+          v-bind:peer-index="activePeer.id"
+          v-bind:peer-stream="activePeer.stream"
+        ></video-player>
       </div>
     </div>
   </div>
@@ -44,10 +50,27 @@ export default {
   data() {
     return {
       error: '',
-      peers: []
+      peers: [],
+      activePeer: {}
     };
   },
   methods: {
+    activePeerExists() {
+      return Object.keys(this.activePeer).length > 0
+    },
+    activatePeerStream(peerIndex) {
+      // If there is an already active peer we disable their streams before enabling the streams of the new active peer
+      if (this.activePeerExists()) {
+        this.activePeer.stream.getTracks().forEach((track) => {
+          track.enabled = false;
+        });
+      }
+
+      this.activePeer = this.peers[peerIndex];
+      this.activePeer.stream.getTracks().forEach((track) => {
+        track.enabled = true;
+      });
+    }
   },
   beforeMount() {
     if (!window.RTCPeerConnection || !navigator.getUserMedia) {
@@ -86,7 +109,7 @@ export default {
         if (existingPeer.id === peer.id) {
           isNewPeer = false;
           console.log('Adding new track for client');
-          //peer.track.enabled = false; // We need the stream to be disable by default
+          peer.track.enabled = false; // We need the stream to be disable by default
           existingPeer.stream.addTrack(peer.track);
         }
       });
