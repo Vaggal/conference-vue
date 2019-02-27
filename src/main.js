@@ -12,10 +12,14 @@ import {
 } from '@fortawesome/vue-fontawesome';
 
 import {
-  faUser
+  faUser,
+  faUserAlt
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faUser);
+library.add([
+  faUser,
+  faUserAlt
+]);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 Vue.config.productionTip = false;

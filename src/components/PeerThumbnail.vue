@@ -1,5 +1,5 @@
 <template>
-  <div @click="incrementVotes">
+  <div @click="incrementVotes" v-bind:class="{ active: peerActive }">
     <font-awesome-icon icon="user" class="fa-3x"/>
     <span class="user-badge badge badge-pill badge-info">{{ votes }}</span>
   </div>
@@ -15,6 +15,7 @@ export default {
   },
   props: {
     peerId: Number,
+    peerActive: Boolean,
     peerVotes: Number
   },
   watch: {
@@ -35,5 +36,8 @@ export default {
 .user-badge {
   position: absolute;
   margin-left: -13px;
+}
+.active {
+  color: #fff;
 }
 </style>

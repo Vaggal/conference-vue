@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <font-awesome-icon icon="user" class="fa-3x"/>
+  <div class="self-thumbnail">
+    <font-awesome-icon icon="user-alt" class="fa-3x"/>
     <span class="user-badge badge badge-pill badge-info">{{ votes }}</span>
   </div>
 </template>
@@ -28,5 +28,8 @@ export default {
 .user-badge {
   position: absolute;
   margin-left: -13px;
+}
+.self-thumbnail {
+  margin-left: 20px;
 }
 </style>

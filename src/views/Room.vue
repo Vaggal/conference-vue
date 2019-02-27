@@ -1,7 +1,7 @@
 <template>
   <div class="home container-fluid">
     <div class="row">
-      <div class="col-xs col-sm-7 offset-sm-2">
+      <div id="mainArea" class="col-xs col-sm-7 offset-sm-2">
         <div id="video-wrapper" class="row">
           <div id="errorAlert" v-show="error" class="alert alert-warning" role="alert">
             <span>{{error}}</span>
@@ -28,6 +28,7 @@
             <peer-thumbnail
               v-on:votes-increment="incrementVotes($event)"
               v-bind:peer-id="peer.id"
+              v-bind:peer-active="peer.active"
               v-bind:peer-votes="votes[peer.id]"
             ></peer-thumbnail>
           </div>
@@ -79,6 +80,7 @@ export default {
       }
 
       this.activePeer = this.peers[peerIndex];
+      this.activePeer.active = true; // TODO: Check if we need to make it again false when the user turn inactive
       this.activePeer.stream.getTracks().forEach((track) => {
         track.enabled = true;
       });
@@ -137,7 +139,8 @@ export default {
 
         this.peers.push({
           id: peer.id,
-          stream: peerMediaStream
+          stream: peerMediaStream,
+          active: false
         });
       }
     });
@@ -170,20 +173,24 @@ export default {
   height: 100vh;
   background: #9e0000;
 }
+#mainArea {
+  height: 100vh;
+}
 #video-wrapper {
   position: relative;
   background: #000;
+  height: 90%;
 }
 #localVideoContainer {
   position: absolute;
   z-index: 1;
   width: 100%;
   height: 100%;
-  margin-right: 30px;
 }
 #localVideo {
   width: 160px;
   height: 120px;
+  box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.75);
 }
 #errorAlert {
   position: absolute;
