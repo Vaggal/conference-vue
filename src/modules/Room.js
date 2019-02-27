@@ -1,3 +1,4 @@
+/** @module modules/Room */
 import Io from '@/modules/Io';
 import Config from '@/modules/Config';
 import EventEmitter from 'wolfy87-eventemitter';
@@ -140,19 +141,38 @@ function addSocketHandlers(socket) {
   socket.on('msg', function (data) {
     handleSocketMessage(data);
   });
+
+  socket.on('votes.update', function (votes) {
+    api.trigger('votes.update', [votes]);
+  });
+}
+
+function addApiHandlers(api) {
+  api.on('votes.increment', function (peerId) {
+    socket.emit('votes.increment', {
+      id: peerId
+    });
+  });
 }
 
 var api = {
   joinRoom: function (r) {
-    if (!connected) {
-      socket.emit('init', {
-        room: r
-      }, function (roomid, id) {
-        currentId = id;
-        roomId = roomid;
-      });
-      connected = true;
-    }
+    let initPromise = new Promise((resolve, reject) => {
+      if (!connected) {
+        socket.emit('init', {
+          room: r
+        }, function (roomid, id) {
+          resolve();
+          currentId = id;
+          roomId = roomid;
+        });
+        connected = true;
+      } else {
+        reject();
+      }
+    });
+
+    return initPromise;
   },
   createRoom: function () {
     let initPromise = new Promise((resolve, reject) => {
@@ -168,6 +188,9 @@ var api = {
   },
   init: function (stream) {
     localStream = stream;
+  },
+  getSelfId: function () {
+    return currentId;
   }
 };
 
@@ -175,5 +198,6 @@ var eventEmitter = new EventEmitter();
 Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter))
 
 addSocketHandlers(socket);
+addApiHandlers(api);
 
 export default api;

@@ -1,5 +1,5 @@
 <template>
-  <div @click="incrementVotes">
+  <div>
     <font-awesome-icon icon="user" class="fa-3x"/>
     <span class="user-badge badge badge-pill badge-info">{{ votes }}</span>
   </div>
@@ -7,25 +7,18 @@
 
 <script>
 export default {
-  name: 'PeerThumbnail',
+  name: 'SelfThumbnail',
   data() {
     return {
-      votes: this.peerVotes
+      votes: this.selfVotes
     }
   },
   props: {
-    peerId: Number,
-    peerVotes: Number
+    selfVotes: Number
   },
   watch: {
-    peerVotes: function () {
-      this.votes = this.peerVotes;
-    }
-  },
-  methods: {
-    incrementVotes() {
-      this.votes++;
-      this.$emit('votes-increment', this.peerId);
+    selfVotes: function () {
+      this.votes = this.selfVotes;
     }
   }
 };

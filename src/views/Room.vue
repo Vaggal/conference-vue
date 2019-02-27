@@ -15,7 +15,14 @@
         :key="key"
         @click="activatePeerStream(key)"
       >
-        <peer-thumbnail></peer-thumbnail>
+        <peer-thumbnail
+          v-on:votes-increment="incrementVotes($event)"
+          v-bind:peer-id="peer.id"
+          v-bind:peer-votes="votes[peer.id]"
+        ></peer-thumbnail>
+      </div>
+      <div class="col-xs-auto">
+        <self-thumbnail v-bind:self-votes="votes[selfId]"></self-thumbnail>
       </div>
     </div>
 
@@ -37,6 +44,7 @@
 <script>
 import VideoPlayer from '@/components/VideoPlayer.vue';
 import PeerThumbnail from '@/components/PeerThumbnail.vue';
+import SelfThumbnail from '@/components/SelfThumbnail.vue';
 
 import $ from 'jquery';
 import 'bootstrap';
@@ -51,10 +59,15 @@ export default {
     return {
       error: '',
       peers: [],
-      activePeer: {}
+      votes: {},
+      activePeer: {},
+      selfId: undefined
     };
   },
   methods: {
+    incrementVotes(peerId) {
+      Room.trigger('votes.increment', [peerId]);
+    },
     activePeerExists() {
       return Object.keys(this.activePeer).length > 0
     },
@@ -86,13 +99,16 @@ export default {
 
       if (!this.$route.params.roomId) {
         Room.createRoom().then((roomId) => {
+          this.selfId = Room.getSelfId();
           this.$router.push({
             name: 'active-room',
             params: { roomId: roomId }
           });
         });
       } else {
-        Room.joinRoom(this.$route.params.roomId);
+        Room.joinRoom(this.$route.params.roomId).then(() => {
+          this.selfId = Room.getSelfId();
+        });
       }
 
       let videoLocal = document.getElementById('videoLocal');
@@ -133,6 +149,10 @@ export default {
         return p.id !== peer.id;
       });
     });
+
+    Room.on('votes.update', (votes) => {
+      this.votes = votes;
+    });
   },
   mounted() {
     let videoLocalElement = document.getElementById('videoLocal');
@@ -140,7 +160,8 @@ export default {
   },
   components: {
     VideoPlayer,
-    PeerThumbnail
+    PeerThumbnail,
+    SelfThumbnail
   }
 };
 </script>
