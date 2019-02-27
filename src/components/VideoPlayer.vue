@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <video :id="peerIndexId" autoplay></video>
-  </div>
+  <video :id="peerIndexId" autoplay></video>
 </template>
 
 <script>

@@ -1,41 +1,40 @@
 <template>
   <div class="home container-fluid">
     <div class="row">
-      <span
-        v-show="error"
-      >Allow the browser to use your web cam and after that share the URL from the address bar with the people you want to talk with.</span>
-      <br>
-      <span>{{error}}</span>
-    </div>
+      <div class="col-xs col-sm-7 offset-sm-2">
+        <div id="video-wrapper" class="row">
+          <div id="errorAlert" v-show="error" class="alert alert-warning" role="alert">
+            <span>{{error}}</span>
+          </div>
+          <div id="localVideoContainer" class="col-xs">
+            <video id="localVideo" autoplay muted></video>
+          </div>
+          <div class="col-xs col-sm d-flex justify-content-center">
+            <video-player
+              v-if="activePeerExists"
+              v-bind:peer-index="activePeer.id"
+              v-bind:peer-stream="activePeer.stream"
+            ></video-player>
+          </div>
+        </div>
 
-    <div class="row justify-content-center">
-      <div
-        class="col-xs-auto"
-        v-for="(peer, key) in peers"
-        :key="key"
-        @click="activatePeerStream(key)"
-      >
-        <peer-thumbnail
-          v-on:votes-increment="incrementVotes($event)"
-          v-bind:peer-id="peer.id"
-          v-bind:peer-votes="votes[peer.id]"
-        ></peer-thumbnail>
-      </div>
-      <div class="col-xs-auto">
-        <self-thumbnail v-bind:self-votes="votes[selfId]"></self-thumbnail>
-      </div>
-    </div>
-
-    <div class="row video-wrapper">
-      <div class="col-sm">
-        <video id="videoLocal" autoplay muted></video>
-      </div>
-      <div class="col-sm">
-        <video-player
-          v-if="activePeerExists"
-          v-bind:peer-index="activePeer.id"
-          v-bind:peer-stream="activePeer.stream"
-        ></video-player>
+        <div class="row justify-content-center">
+          <div
+            class="col-xs-auto"
+            v-for="(peer, key) in peers"
+            :key="key"
+            @click="activatePeerStream(key)"
+          >
+            <peer-thumbnail
+              v-on:votes-increment="incrementVotes($event)"
+              v-bind:peer-id="peer.id"
+              v-bind:peer-votes="votes[peer.id]"
+            ></peer-thumbnail>
+          </div>
+          <div class="col-xs-auto">
+            <self-thumbnail v-bind:self-votes="votes[selfId]"></self-thumbnail>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -111,8 +110,8 @@ export default {
         });
       }
 
-      let videoLocal = document.getElementById('videoLocal');
-      videoLocal.srcObject = localStream;
+      let localVideo = document.getElementById('localVideo');
+      localVideo.srcObject = localStream;
     }, () => {
       this.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
     });
@@ -155,8 +154,8 @@ export default {
     });
   },
   mounted() {
-    let videoLocalElement = document.getElementById('videoLocal');
-    InteractiveVideo.setup(videoLocalElement);
+    let localVideoElement = document.getElementById('localVideo');
+    InteractiveVideo.setup(localVideoElement);
   },
   components: {
     VideoPlayer,
@@ -171,7 +170,24 @@ export default {
   height: 100vh;
   background: #9e0000;
 }
-.video-wrapper {
-  background: black;
+#video-wrapper {
+  position: relative;
+  background: #000;
+}
+#localVideoContainer {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin-right: 30px;
+}
+#localVideo {
+  width: 160px;
+  height: 120px;
+}
+#errorAlert {
+  position: absolute;
+  right: 0;
+  z-index: 5;
 }
 </style>
