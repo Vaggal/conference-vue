@@ -6,7 +6,7 @@
           <div id="errorAlert" v-show="error" class="alert alert-warning" role="alert">
             <span>{{error}}</span>
           </div>
-          <div id="localVideoContainer" class="col-xs">
+          <div id="localVideoContainer">
             <video id="localVideo" autoplay muted></video>
           </div>
           <div class="col-xs col-sm d-flex justify-content-center">
@@ -18,21 +18,25 @@
           </div>
         </div>
 
-        <div class="row justify-content-center">
-          <div
-            class="col-xs-auto"
-            v-for="(peer, key) in peers"
-            :key="key"
-            @click="activatePeerStream(key)"
-          >
-            <peer-thumbnail
-              v-on:votes-increment="incrementVotes($event)"
-              v-bind:peer-id="peer.id"
-              v-bind:peer-active="peer.active"
-              v-bind:peer-votes="votes[peer.id]"
-            ></peer-thumbnail>
+        <div class="row mt-2">
+          <div class="col-8 offset-2">
+            <div class="row justify-content-center">
+              <div
+                class="col-auto"
+                v-for="(peer, key) in peers"
+                :key="key"
+                @click="activatePeerStream(key)"
+              >
+                <peer-thumbnail
+                  v-on:votes-increment="incrementVotes($event)"
+                  v-bind:peer-id="peer.id"
+                  v-bind:peer-active="peer.active"
+                  v-bind:peer-votes="votes[peer.id]"
+                ></peer-thumbnail>
+              </div>
+            </div>
           </div>
-          <div class="col-xs-auto">
+          <div class="col-2 d-flex justify-content-center">
             <self-thumbnail v-bind:self-votes="votes[selfId]"></self-thumbnail>
           </div>
         </div>
