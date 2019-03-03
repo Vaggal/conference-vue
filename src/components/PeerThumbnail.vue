@@ -1,7 +1,7 @@
 <template>
   <div @click="incrementVotes" v-bind:class="{ active: peerActive }">
     <font-awesome-icon icon="user" class="fa-3x"/>
-    <span class="user-badge badge badge-pill badge-info">{{ votes }}</span>
+    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">{{ votes }}</span>
   </div>
 </template>
 
@@ -14,6 +14,7 @@ export default {
     }
   },
   props: {
+    votingEnabled: Boolean,
     peerId: Number,
     peerActive: Boolean,
     peerVotes: Number
@@ -25,8 +26,10 @@ export default {
   },
   methods: {
     incrementVotes() {
-      this.votes++;
-      this.$emit('votes-increment', this.peerId);
+      if (this.votingEnabled) {
+        this.votes++;
+        this.$emit('votes-increment', this.peerId);
+      }
     }
   }
 };

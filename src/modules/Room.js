@@ -143,7 +143,17 @@ function addSocketHandlers(socket) {
   });
 
   socket.on('votes.update', function (votes) {
+    console.log("Votes update");
     api.trigger('votes.update', [votes]);
+  });
+
+  socket.on('conversation.type', function (conversation) {
+    console.log("Conversation Type: " + conversation.type);
+    api.trigger('conversation.type', [conversation]);
+  });
+
+  socket.on('active.peer', function (peer) {
+    api.trigger('active.peer', [peer]);
   });
 }
 
@@ -153,6 +163,13 @@ function addApiHandlers(api) {
       id: peerId
     });
   });
+
+  api.on('conversation.type.select', function (type) {
+    console.log("Conversation Type Select: " + type);
+    socket.emit('conversation.type.select', {
+      type: type
+    })
+  })
 }
 
 var api = {

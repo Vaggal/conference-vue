@@ -14,7 +14,7 @@ import {
 import {
   faUser,
   faUserAlt
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
 library.add([
   faUser,

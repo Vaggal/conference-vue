@@ -1,7 +1,28 @@
 <template>
   <div class="home container-fluid">
     <div class="row">
-      <div id="mainArea" class="col-xs col-sm-7 offset-sm-2">
+      <div id="typeArea" class="col-sm-2">
+        <form>
+          <div class="form-group align-items-center text-center">
+            <label for="conversationType">Conversation Type</label>
+            <select
+              id="conversationType"
+              class="custom-select mr-sm-2"
+              @change="selectConversationType($event)"
+              :disabled="conversationIsSet()"
+            >
+              <option selected>Choose...</option>
+              <option value="byturn">By Turn</option>
+              <option value="loose">Loose</option>
+            </select>
+          </div>
+        </form>
+        <div v-if="conversationIsSet()" class="text-center">Conversation is set to:
+          <br>
+          <strong>{{conversation.friendlyType}}</strong>
+        </div>
+      </div>
+      <div id="mainArea" class="col-xs col-sm-7">
         <div id="video-wrapper" class="row">
           <div id="errorAlert" v-show="error" class="alert alert-warning" role="alert">
             <span>{{error}}</span>
@@ -29,6 +50,7 @@
               >
                 <peer-thumbnail
                   v-on:votes-increment="incrementVotes($event)"
+                  v-bind:voting-enabled="conversationIsSet()"
                   v-bind:peer-id="peer.id"
                   v-bind:peer-active="peer.active"
                   v-bind:peer-votes="votes[peer.id]"
@@ -65,15 +87,22 @@ export default {
       peers: [],
       votes: {},
       activePeer: {},
+      conversation: {},
       selfId: undefined
     };
   },
   methods: {
+    isNumeric(value) {
+      return /^\d+$/.test(value);
+    },
     incrementVotes(peerId) {
       Room.trigger('votes.increment', [peerId]);
     },
     activePeerExists() {
-      return Object.keys(this.activePeer).length > 0
+      return Object.keys(this.activePeer).length > 0;
+    },
+    conversationIsSet() {
+      return Object.keys(this.conversation).length > 0;
     },
     activatePeerStream(peerIndex) {
       // If there is an already active peer we disable their streams before enabling the streams of the new active peer
@@ -88,6 +117,11 @@ export default {
       this.activePeer.stream.getTracks().forEach((track) => {
         track.enabled = true;
       });
+    },
+    selectConversationType(event) {
+      if (event.target.value === 'byturn' || event.target.value === 'loose') {
+        Room.trigger('conversation.type.select', [event.target.value]);
+      }
     }
   },
   beforeMount() {
@@ -158,6 +192,16 @@ export default {
 
     Room.on('votes.update', (votes) => {
       this.votes = votes;
+    });
+
+    Room.on('conversation.type', (conversation) => {
+      this.conversation = conversation;
+
+      if (conversation.type === "loose") {
+        this.conversation.friendlyType = 'Loose';
+      } else if (conversation.type === "byturn") {
+        this.conversation.friendlyType = 'By Turn';
+      }
     });
   },
   mounted() {
