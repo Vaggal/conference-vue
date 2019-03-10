@@ -42,12 +42,7 @@
         <div class="row mt-2">
           <div class="col-8 offset-2">
             <div class="row justify-content-center">
-              <div
-                class="col-auto"
-                v-for="(peer, key) in peers"
-                :key="key"
-                @click="activatePeerStream(key)"
-              >
+              <div class="col-auto" v-for="(peer, key) in peers" :key="key">
                 <peer-thumbnail
                   v-on:votes-increment="incrementVotes($event)"
                   v-bind:voting-enabled="conversationIsSet()"
@@ -59,9 +54,15 @@
             </div>
           </div>
           <div class="col-2 d-flex justify-content-center">
-            <self-thumbnail v-bind:self-votes="votes[selfId]"></self-thumbnail>
+            <self-thumbnail
+              v-bind:voting-enabled="conversationIsSet()"
+              v-bind:self-votes="votes[selfId]"
+            ></self-thumbnail>
           </div>
         </div>
+      </div>
+      <div class="col-xs col-sm-2">
+        <countdown v-if="secondsLeft !== undefined" v-bind:seconds-left="secondsLeft"></countdown>
       </div>
     </div>
   </div>
@@ -71,6 +72,7 @@
 import VideoPlayer from '@/components/VideoPlayer.vue';
 import PeerThumbnail from '@/components/PeerThumbnail.vue';
 import SelfThumbnail from '@/components/SelfThumbnail.vue';
+import Countdown from '@/components/Countdown.vue'; // TODO: Countdown should be run conditionally because it causes exception
 
 import $ from 'jquery';
 import 'bootstrap';
@@ -84,11 +86,16 @@ export default {
   data() {
     return {
       error: '',
+      self: {
+        id: undefined,
+        stream: undefined,
+        active: false
+      },
       peers: [],
-      votes: {},
       activePeer: {},
+      votes: {},
       conversation: {},
-      selfId: undefined
+      secondsLeft: undefined
     };
   },
   methods: {
@@ -104,18 +111,16 @@ export default {
     conversationIsSet() {
       return Object.keys(this.conversation).length > 0;
     },
-    activatePeerStream(peerIndex) {
-      // If there is an already active peer we disable their streams before enabling the streams of the new active peer
-      if (this.activePeerExists()) {
-        this.activePeer.stream.getTracks().forEach((track) => {
-          track.enabled = false;
-        });
+    getPeerFromId(peerId) {
+      if (this.self.id === peerId) {
+        return self;
       }
 
-      this.activePeer = this.peers[peerIndex];
-      this.activePeer.active = true; // TODO: Check if we need to make it again false when the user turn inactive
-      this.activePeer.stream.getTracks().forEach((track) => {
-        track.enabled = true;
+      this.peers.forEach((existingPeer) => {
+        // Peer already exists so we just add the track to their MediaStream object
+        if (existingPeer.id === peerId) {
+          return existingPeer;
+        }
       });
     },
     selectConversationType(event) {
@@ -130,15 +135,13 @@ export default {
       return;
     }
 
-    var localStream;
-
     LocalVideoStream.get().then((stream) => {
-      localStream = stream;
-      Room.init(localStream);
+      this.self.stream = stream;
+      Room.init(this.self.stream);
 
       if (!this.$route.params.roomId) {
         Room.createRoom().then((roomId) => {
-          this.selfId = Room.getSelfId();
+          this.self.id = Room.getSelfId();
           this.$router.push({
             name: 'active-room',
             params: { roomId: roomId }
@@ -146,12 +149,12 @@ export default {
         });
       } else {
         Room.joinRoom(this.$route.params.roomId).then(() => {
-          this.selfId = Room.getSelfId();
+          this.self.id = Room.getSelfId();
         });
       }
 
       let localVideo = document.getElementById('localVideo');
-      localVideo.srcObject = localStream;
+      localVideo.srcObject = this.self.stream;
     }, () => {
       this.error = 'No audio/video permissions. Please refresh your browser and allow the audio/video capturing.';
     });
@@ -197,11 +200,31 @@ export default {
     Room.on('conversation.type', (conversation) => {
       this.conversation = conversation;
 
-      if (conversation.type === "loose") {
+      if (conversation.type === 'loose') {
         this.conversation.friendlyType = 'Loose';
-      } else if (conversation.type === "byturn") {
+      } else if (conversation.type === 'byturn') {
         this.conversation.friendlyType = 'By Turn';
       }
+    });
+
+    Room.on('time.left', (secondsLeft) => {
+      this.secondsLeft = secondsLeft;
+    });
+
+    Room.on('active.peer', (peerId) => {
+      if (this.activePeerExists()) {
+        this.activePeer.stream.getTracks().forEach((track) => {
+          track.enabled = false;
+        });
+      }
+
+      let peerToActivate = this.getPeerFromId(peerId);
+
+      this.activePeer = peerToActivate;
+      this.activePeer.active = true; // TODO: Check if we need to make it again false when the user turn inactive
+      this.activePeer.stream.getTracks().forEach((track) => {
+        track.enabled = true;
+      });
     });
   },
   mounted() {
@@ -211,7 +234,8 @@ export default {
   components: {
     VideoPlayer,
     PeerThumbnail,
-    SelfThumbnail
+    SelfThumbnail,
+    Countdown
   }
 };
 </script>

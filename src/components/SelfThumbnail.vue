@@ -1,7 +1,7 @@
 <template>
   <div>
     <font-awesome-icon icon="user-alt" class="fa-3x"/>
-    <span class="user-badge badge badge-pill badge-info">{{ votes }}</span>
+    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">{{ votes }}</span>
   </div>
 </template>
 
@@ -14,6 +14,7 @@ export default {
     }
   },
   props: {
+    votingEnabled: Boolean,
     selfVotes: Number
   },
   watch: {

@@ -34,7 +34,8 @@ function onResizeMove(event) {
 }
 
 let setup = function (videoLocalElement) {
-  interact(videoLocalElement).draggable({
+  interact(videoLocalElement)
+    .draggable({
       inertia: true,
       restrict: {
         restriction: 'parent',
