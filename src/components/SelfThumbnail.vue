@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-bind:class="{ active: selfActive }">
     <font-awesome-icon icon="user-alt" class="fa-3x"/>
     <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">{{ votes }}</span>
   </div>
@@ -15,6 +15,7 @@ export default {
   },
   props: {
     votingEnabled: Boolean,
+    selfActive: Boolean,
     selfVotes: Number
   },
   watch: {
@@ -29,5 +30,8 @@ export default {
 .user-badge {
   position: absolute;
   margin-left: -13px;
+}
+.active {
+  color: #fff;
 }
 </style>

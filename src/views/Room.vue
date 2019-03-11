@@ -56,7 +56,8 @@
           <div class="col-2 d-flex justify-content-center">
             <self-thumbnail
               v-bind:voting-enabled="conversationIsSet()"
-              v-bind:self-votes="votes[selfId]"
+              v-bind:self-active="self.active"
+              v-bind:self-votes="votes[self.id]"
             ></self-thumbnail>
           </div>
         </div>
@@ -112,16 +113,15 @@ export default {
       return Object.keys(this.conversation).length > 0;
     },
     getPeerFromId(peerId) {
-      if (this.self.id === peerId) {
-        return self;
+      if (this.self.id == peerId) {
+        return this.self;
       }
 
-      this.peers.forEach((existingPeer) => {
-        // Peer already exists so we just add the track to their MediaStream object
-        if (existingPeer.id === peerId) {
+      for (const existingPeer of this.peers) {
+        if (existingPeer.id == peerId) {
           return existingPeer;
         }
-      });
+      }
     },
     selectConversationType(event) {
       if (event.target.value === 'byturn' || event.target.value === 'loose') {
