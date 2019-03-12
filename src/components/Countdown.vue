@@ -16,6 +16,8 @@ export default {
   },
   methods: {
     startTimer() {
+      // We always need to stop the timer as it will not start again on the next update.
+      this.timer.stop();
       this.timer.start({
         startValues: {
           seconds: this.secondsLeft
@@ -31,15 +33,16 @@ export default {
     }
   },
   props: {
-    secondsLeft: Number
+    secondsLeft: Number,
+    updateId: String
   },
   watch: {
-    secondsLeft: function () {
-      this.startTimer();
+    updateId: {
+      immediate: true,
+      handler: function () {
+        this.startTimer();
+      }
     }
-  },
-  mounted() {
-    this.startTimer();
   }
 };
 </script>

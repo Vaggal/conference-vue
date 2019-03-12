@@ -63,7 +63,11 @@
         </div>
       </div>
       <div class="col-xs col-sm-2">
-        <countdown v-if="secondsLeft !== undefined" v-bind:seconds-left="secondsLeft"></countdown>
+        <countdown
+          v-if="countdown.secondsLeft !== undefined"
+          v-bind:seconds-left="countdown.secondsLeft"
+          v-bind:update-id="countdown.updateId"
+        ></countdown>
       </div>
     </div>
   </div>
@@ -73,10 +77,11 @@
 import VideoPlayer from '@/components/VideoPlayer.vue';
 import PeerThumbnail from '@/components/PeerThumbnail.vue';
 import SelfThumbnail from '@/components/SelfThumbnail.vue';
-import Countdown from '@/components/Countdown.vue'; // TODO: Countdown should be run conditionally because it causes exception
+import Countdown from '@/components/Countdown.vue';
 
 import $ from 'jquery';
 import 'bootstrap';
+import { v4 as uuid } from "uuid";
 
 import Room from '@/modules/Room';
 import InteractiveVideo from '@/modules/InteractiveVideo';
@@ -96,7 +101,10 @@ export default {
       activePeer: {},
       votes: {},
       conversation: {},
-      secondsLeft: undefined
+      countdown: {
+        secondsLeft: undefined,
+        updateId: undefined
+      }
     };
   },
   methods: {
@@ -208,11 +216,14 @@ export default {
     });
 
     Room.on('time.left', (secondsLeft) => {
-      this.secondsLeft = secondsLeft;
+      this.countdown.secondsLeft = secondsLeft;
+      this.countdown.updateId = uuid();
     });
 
     Room.on('active.peer', (peerId) => {
+      // TODO: reset peer.active to false as it is not reset probably because of some weird reference
       if (this.activePeerExists()) {
+        this.activePeer.active == false;
         this.activePeer.stream.getTracks().forEach((track) => {
           track.enabled = false;
         });
@@ -221,7 +232,7 @@ export default {
       let peerToActivate = this.getPeerFromId(peerId);
 
       this.activePeer = peerToActivate;
-      this.activePeer.active = true; // TODO: Check if we need to make it again false when the user turn inactive
+      this.activePeer.active = true;
       this.activePeer.stream.getTracks().forEach((track) => {
         track.enabled = true;
       });
