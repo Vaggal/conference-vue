@@ -1,26 +1,28 @@
 <template>
-  <div @click="incrementVotes" v-bind:class="{ active: peerActive }">
-    <font-awesome-icon icon="user" class="fa-3x"/>
-    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">{{ votes }}</span>
+  <div :class="{ active: peerActive }" @click="incrementVotes">
+    <font-awesome-icon icon="user" class="fa-3x" />
+    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">
+      {{ votes }}
+    </span>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'PeerThumbnail',
-  data() {
-    return {
-      votes: this.peerVotes
-    }
-  },
+  name: "PeerThumbnail",
   props: {
     votingEnabled: Boolean,
     peerId: Number,
     peerActive: Boolean,
     peerVotes: Number
   },
+  data() {
+    return {
+      votes: this.peerVotes
+    };
+  },
   watch: {
-    peerVotes: function () {
+    peerVotes: function() {
       this.votes = this.peerVotes;
     }
   },
@@ -28,14 +30,14 @@ export default {
     incrementVotes() {
       if (this.votingEnabled) {
         this.votes++;
-        this.$emit('votes-increment', this.peerId);
+        this.$emit("votes-increment", this.peerId);
       }
     }
   }
 };
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .user-badge {
   position: absolute;
   margin-left: -13px;

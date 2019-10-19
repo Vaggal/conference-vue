@@ -1,12 +1,14 @@
 /** @module modules/Room */
-import Io from '@/modules/Io';
-import Config from '@/modules/Config';
-import EventEmitter from 'wolfy87-eventemitter';
+import Io from "@/modules/Io";
+import Config from "@/modules/Config";
+import EventEmitter from "wolfy87-eventemitter";
 
 var iceConfig = {
-  iceServers: [{
-    url: 'stun:stun.l.google.com:19302'
-  }]
+  iceServers: [
+    {
+      url: "stun:stun.l.google.com:19302"
+    }
+  ]
 };
 
 var peerConnections = {};
@@ -26,25 +28,27 @@ function createNewPeerConnection(id) {
   var peerConnection = new RTCPeerConnection(iceConfig);
   peerConnections[id] = peerConnection;
 
-  localStream.getTracks().forEach((track) => {
+  localStream.getTracks().forEach(track => {
     peerConnection.addTrack(track, localStream);
   });
 
-  peerConnection.onicecandidate = function (event) {
-    socket.emit('msg', {
+  peerConnection.onicecandidate = function(event) {
+    socket.emit("msg", {
       by: currentId,
       to: id,
       ice: event.candidate,
-      type: 'ice'
+      type: "ice"
     });
   };
 
-  peerConnection.ontrack = function (rtcTrackEvent) {
-    api.trigger('peer.track', [{
-      id: id,
-      track: rtcTrackEvent.track
-    }]);
-  }
+  peerConnection.ontrack = function(rtcTrackEvent) {
+    api.trigger("peer.track", [
+      {
+        id: id,
+        track: rtcTrackEvent.track
+      }
+    ]);
+  };
 
   return peerConnection;
 }
@@ -53,24 +57,27 @@ function makeOffer(id) {
   var peerConnection = getPeerConnection(id);
 
   // Native WebRTC method: https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer
-  peerConnection.createOffer({
-    mandatory: {
-      offerToReceiveVideo: true,
-      offerToReceiveAudio: true
-    }
-  }).then((sdp) => {
-    peerConnection.setLocalDescription(sdp);
-    console.log('Creating an offer for', id);
+  peerConnection
+    .createOffer({
+      mandatory: {
+        offerToReceiveVideo: true,
+        offerToReceiveAudio: true
+      }
+    })
+    .then(sdp => {
+      peerConnection.setLocalDescription(sdp);
+      console.log("Creating an offer for", id);
 
-    socket.emit('msg', {
-      by: currentId,
-      to: id,
-      sdp: sdp,
-      type: 'sdp-offer'
+      socket.emit("msg", {
+        by: currentId,
+        to: id,
+        sdp: sdp,
+        type: "sdp-offer"
+      });
+    })
+    .catch(e => {
+      console.log(e);
     });
-  }).catch((e) => {
-    console.log(e);
-  });
 }
 
 /**
@@ -82,42 +89,51 @@ function handleSocketMessage(data) {
   var rtcSessionDescription;
 
   switch (data.type) {
-    case 'sdp-offer':
+    case "sdp-offer":
       rtcSessionDescription = new RTCSessionDescription(data.sdp);
 
-      peerConnection.setRemoteDescription(rtcSessionDescription).then(() => {
-        console.log('Setting remote description by offer');
+      peerConnection
+        .setRemoteDescription(rtcSessionDescription)
+        .then(() => {
+          console.log("Setting remote description by offer");
 
-        peerConnection.createAnswer().then((sdp) => {
-          peerConnection.setLocalDescription(sdp);
+          peerConnection
+            .createAnswer()
+            .then(sdp => {
+              peerConnection.setLocalDescription(sdp);
 
-          socket.emit('msg', {
-            by: currentId,
-            to: data.by,
-            sdp: sdp,
-            type: 'sdp-answer'
-          });
-        }).catch((e) => {
+              socket.emit("msg", {
+                by: currentId,
+                to: data.by,
+                sdp: sdp,
+                type: "sdp-answer"
+              });
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        })
+        .catch(e => {
           console.log(e);
         });
-      }).catch((e) => {
-        console.log(e);
-      });
 
       break;
-    case 'sdp-answer':
+    case "sdp-answer":
       rtcSessionDescription = new RTCSessionDescription(data.sdp);
 
-      peerConnection.setRemoteDescription(rtcSessionDescription).then(() => {
-        console.log('Setting remote description by answer');
-      }).catch((e) => {
-        console.error(e);
-      });
+      peerConnection
+        .setRemoteDescription(rtcSessionDescription)
+        .then(() => {
+          console.log("Setting remote description by answer");
+        })
+        .catch(e => {
+          console.error(e);
+        });
 
       break;
-    case 'ice':
+    case "ice":
       if (data.ice) {
-        console.log('Adding ice candidates');
+        console.log("Adding ice candidates");
 
         let rtcIceCandidate = new RTCIceCandidate(data.ice);
         peerConnection.addIceCandidate(rtcIceCandidate);
@@ -130,60 +146,64 @@ var socket = Io.connect(Config.SIGNALIG_SERVER_URL);
 var connected = false;
 
 function addSocketHandlers(socket) {
-  socket.on('peer.connected', function (peer) {
+  socket.on("peer.connected", function(peer) {
     makeOffer(peer.id);
   });
 
-  socket.on('peer.disconnected', function (peer) {
-    api.trigger('peer.disconnected', [peer]);
+  socket.on("peer.disconnected", function(peer) {
+    api.trigger("peer.disconnected", [peer]);
   });
 
-  socket.on('msg', function (data) {
+  socket.on("msg", function(data) {
     handleSocketMessage(data);
   });
 
-  socket.on('votes.update', function (votes) {
-    api.trigger('votes.update', [votes]);
+  socket.on("votes.update", function(votes) {
+    api.trigger("votes.update", [votes]);
   });
 
-  socket.on('conversation.type', function (conversation) {
-    api.trigger('conversation.type', [conversation]);
+  socket.on("conversation.type", function(conversation) {
+    api.trigger("conversation.type", [conversation]);
   });
 
-  socket.on('active.peer', function (peerId) {
-    api.trigger('active.peer', [peerId]);
+  socket.on("active.peer", function(peerId) {
+    api.trigger("active.peer", [peerId]);
   });
 
-  socket.on('time.left', function (secondsLeft) {
-    api.trigger('time.left', [secondsLeft]);
+  socket.on("time.left", function(secondsLeft) {
+    api.trigger("time.left", [secondsLeft]);
   });
 }
 
 function addApiHandlers(api) {
-  api.on('votes.increment', function (peerId) {
-    socket.emit('votes.increment', {
+  api.on("votes.increment", function(peerId) {
+    socket.emit("votes.increment", {
       id: peerId
     });
   });
 
-  api.on('conversation.type.select', function (type) {
-    socket.emit('conversation.type.select', {
+  api.on("conversation.type.select", function(type) {
+    socket.emit("conversation.type.select", {
       type: type
-    })
-  })
+    });
+  });
 }
 
 var api = {
-  joinRoom: function (r) {
+  joinRoom: function(r) {
     let initPromise = new Promise((resolve, reject) => {
       if (!connected) {
-        socket.emit('init', {
-          room: r
-        }, function (roomid, id) {
-          resolve();
-          currentId = id;
-          roomId = roomid;
-        });
+        socket.emit(
+          "init",
+          {
+            room: r
+          },
+          function(roomid, id) {
+            resolve();
+            currentId = id;
+            roomId = roomid;
+          }
+        );
         connected = true;
       } else {
         reject();
@@ -192,9 +212,9 @@ var api = {
 
     return initPromise;
   },
-  createRoom: function () {
-    let initPromise = new Promise((resolve, reject) => {
-      socket.emit('init', null, function (roomid, id) {
+  createRoom: function() {
+    let initPromise = new Promise(resolve => {
+      socket.emit("init", null, function(roomid, id) {
         resolve(roomid);
         roomId = roomid;
         currentId = id;
@@ -204,16 +224,16 @@ var api = {
 
     return initPromise;
   },
-  init: function (stream) {
+  init: function(stream) {
     localStream = stream;
   },
-  getSelfId: function () {
+  getSelfId: function() {
     return currentId;
   }
 };
 
 var eventEmitter = new EventEmitter();
-Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter))
+Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter));
 
 addSocketHandlers(socket);
 addApiHandlers(api);

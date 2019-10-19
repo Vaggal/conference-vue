@@ -4,25 +4,23 @@
 
 <script>
 export default {
-  name: 'VideoPlayer',
-  data() {
-    return {
-      peerIndexId: 'peer' + this.peerIndex
-    };
-  },
-  methods: {
-    setVideoStream() {
-      let peerVideoElement = document.getElementById(this.peerIndexId);
-      peerVideoElement.srcObject = this.peerStream;
-    }
-  },
+  name: "VideoPlayer",
   props: {
-    peerIndex: Number,
+    peerIndex: {
+      type: Number,
+      default: 0
+    },
     peerStream: MediaStream
   },
+  data() {
+    return {
+      peerIndexId: "peer" + this.peerIndex
+    };
+  },
   watch: {
-    peerIndex: function () { // We need this so that it will update peerIndexId and the the updated hook triggers
-      this.peerIndexId = 'peer' + this.peerIndex;
+    peerIndex: function() {
+      // We need this so that it will update peerIndexId and the the updated hook triggers
+      this.peerIndexId = "peer" + this.peerIndex;
     }
   },
   mounted() {
@@ -30,9 +28,14 @@ export default {
   },
   updated() {
     this.setVideoStream();
+  },
+  methods: {
+    setVideoStream() {
+      let peerVideoElement = document.getElementById(this.peerIndexId);
+      peerVideoElement.srcObject = this.peerStream;
+    }
   }
 };
 </script>
 
-<style scoped lang='scss'>
-</style>
+<style scoped lang="scss"></style>
