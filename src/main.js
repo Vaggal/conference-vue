@@ -1,6 +1,7 @@
 import Vue from "vue";
 import App from "@/App.vue";
 import router from "@/router";
+// eslint-disable-next-line no-unused-vars
 import adapter from "webrtc-adapter";
 
 import { library } from "@fortawesome/fontawesome-svg-core";

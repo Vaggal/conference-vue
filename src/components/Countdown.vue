@@ -8,8 +8,14 @@ import { Timer } from "easytimer.js";
 export default {
   name: "Countdown",
   props: {
-    secondsLeft: Number,
-    updateId: String
+    secondsLeft: {
+      type: Number,
+      default: 0
+    },
+    updateId: {
+      type: String,
+      default: "0"
+    }
   },
   data() {
     return {

@@ -26,8 +26,8 @@
       <div id="mainArea" class="col-xs col-sm-7">
         <div id="video-wrapper" class="row">
           <div
-            id="errorAlert"
             v-show="error"
+            id="errorAlert"
             class="alert alert-warning"
             role="alert"
           >
@@ -52,9 +52,9 @@
                 <PeerThumbnail
                   :voting-enabled="conversationIsSet()"
                   :peer-id="peer.id"
-                  @votes-increment="incrementVotes($event)"
                   :peer-active="peer.active"
                   :peer-votes="votes[peer.id]"
+                  @votes-increment="incrementVotes($event)"
                 ></PeerThumbnail>
               </div>
             </div>
