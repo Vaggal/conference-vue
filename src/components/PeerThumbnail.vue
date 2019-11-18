@@ -12,9 +12,15 @@ export default {
   name: "PeerThumbnail",
   props: {
     votingEnabled: Boolean,
-    peerId: Number,
+    peerId: {
+      type: Number,
+      default: 0
+    },
     peerActive: Boolean,
-    peerVotes: Number
+    peerVotes: {
+      type: Number,
+      default: 0
+    }
   },
   data() {
     return {

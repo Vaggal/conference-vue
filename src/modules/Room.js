@@ -13,6 +13,7 @@ var iceConfig = {
 
 var peerConnections = {};
 var currentId;
+// eslint-disable-next-line no-unused-vars
 var roomId;
 var localStream;
 
