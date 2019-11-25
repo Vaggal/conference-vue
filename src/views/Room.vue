@@ -192,7 +192,7 @@ export default {
       this.votes = votes;
     });
 
-    Room.on("conversation.type", conversation => {
+    Room.on("conversation.type.set", conversation => {
       this.conversation = conversation;
 
       if (conversation.type === "loose") {
@@ -285,6 +285,7 @@ export default {
   width: 160px;
   height: 120px;
   box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.75);
+  touch-action: none;
 }
 #errorAlert {
   position: absolute;

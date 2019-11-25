@@ -1,5 +1,12 @@
 let config = {
-  SIGNALIG_SERVER_URL: "communicate.local:5555"
+  SignalingServerUrl: "communicate.local:5555",
+  RTCConfiguration: {
+    iceServers: [
+      {
+        url: "stun:stun.l.google.com:19302"
+      }
+    ]
+  }
 };
 
 export default config;

@@ -3,14 +3,6 @@ import Io from "@/modules/Io";
 import Config from "@/modules/Config";
 import EventEmitter from "wolfy87-eventemitter";
 
-var iceConfig = {
-  iceServers: [
-    {
-      url: "stun:stun.l.google.com:19302"
-    }
-  ]
-};
-
 var peerConnections = {};
 var currentId;
 // eslint-disable-next-line no-unused-vars
@@ -26,7 +18,7 @@ function getPeerConnection(id) {
 }
 
 function createNewPeerConnection(id) {
-  var peerConnection = new RTCPeerConnection(iceConfig);
+  var peerConnection = new RTCPeerConnection(Config.RTCConfiguration);
   peerConnections[id] = peerConnection;
 
   localStream.getTracks().forEach(track => {
@@ -143,7 +135,7 @@ function handleSocketMessage(data) {
   }
 }
 
-var socket = Io.connect(Config.SIGNALIG_SERVER_URL);
+var socket = Io.connect(Config.SignalingServerUrl);
 var connected = false;
 
 function addSocketHandlers(socket) {
@@ -163,8 +155,8 @@ function addSocketHandlers(socket) {
     api.trigger("votes.update", [votes]);
   });
 
-  socket.on("conversation.type", function(conversation) {
-    api.trigger("conversation.type", [conversation]);
+  socket.on("conversation.type.select", function(conversation) {
+    api.trigger("conversation.type.set", [conversation]);
   });
 
   socket.on("active.peer", function(peerId) {
@@ -184,6 +176,12 @@ function addApiHandlers(api) {
   });
 
   api.on("conversation.type.select", function(type) {
+    // We trigger the api again so we update the current user also
+    api.trigger("conversation.type.set", [
+      {
+        type: type
+      }
+    ]);
     socket.emit("conversation.type.select", {
       type: type
     });
@@ -239,4 +237,10 @@ Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter));
 addSocketHandlers(socket);
 addApiHandlers(api);
 
+/*
+    The api variable is a way for Room.vue and Room.js to communicate.
+    Room.js is the only place that we have access to the socket.
+    In this way when we need to make a change in the view based on an event from a socket we can trigger in Room.js an event
+    that Room.vue will listen to and apply the change to the view
+*/
 export default api;
