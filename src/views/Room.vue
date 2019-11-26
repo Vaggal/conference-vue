@@ -9,7 +9,7 @@
               id="conversationType"
               class="custom-select mr-sm-2"
               :disabled="conversationIsSet()"
-              @change="selectConversationType($event)"
+              @change="conversationTypeSelected($event)"
             >
               <option selected>Choose...</option>
               <option value="byturn">By Turn</option>
@@ -253,9 +253,9 @@ export default {
         }
       }
     },
-    selectConversationType(event) {
+    conversationTypeSelected(event) {
       if (event.target.value === "byturn" || event.target.value === "loose") {
-        Room.trigger("conversation.type.select", [event.target.value]);
+        Room.trigger("conversation.type.selected", [event.target.value]);
       }
     }
   }

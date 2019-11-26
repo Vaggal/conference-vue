@@ -155,7 +155,7 @@ function addSocketHandlers(socket) {
     api.trigger("votes.update", [votes]);
   });
 
-  socket.on("conversation.type.select", function(conversation) {
+  socket.on("conversation.type.set", function(conversation) {
     api.trigger("conversation.type.set", [conversation]);
   });
 
@@ -175,14 +175,14 @@ function addApiHandlers(api) {
     });
   });
 
-  api.on("conversation.type.select", function(type) {
-    // We trigger the api again so we update the current user also
-    api.trigger("conversation.type.set", [
-      {
-        type: type
-      }
-    ]);
-    socket.emit("conversation.type.select", {
+  api.on("conversation.type.selected", function(type) {
+    // We trigger the api again so we update the current user also. NOTE: We should not do that as the server must set this when all users have selected
+    // api.trigger("conversation.type.set", [
+    //   {
+    //     type: type
+    //   }
+    // ]);
+    socket.emit("conversation.type.selected", {
       type: type
     });
   });
