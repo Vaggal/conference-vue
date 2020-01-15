@@ -5,9 +5,11 @@ import EventEmitter from "wolfy87-eventemitter";
 
 var peerConnections = {};
 var currentId;
+// TODO: roomId is not used and it may cause problems
 // eslint-disable-next-line no-unused-vars
 var roomId;
 var localStream;
+var connected = false;
 
 function getPeerConnection(id) {
   if (peerConnections[id]) {
@@ -136,66 +138,49 @@ function handleSocketMessage(data) {
 }
 
 var socket = Io.connect(Config.SignalingServerUrl);
-var connected = false;
 
-function addSocketHandlers(socket) {
-  socket.on("peer.connected", function(peer) {
-    makeOffer(peer.id);
-  });
+socket.on("peer.connected", function(peer) {
+  makeOffer(peer.id);
+});
 
-  socket.on("peer.disconnected", function(peer) {
-    api.trigger("peer.disconnected", [peer]);
-  });
+socket.on("peer.disconnected", function(peer) {
+  api.trigger("peer.disconnected", [peer]);
+});
 
-  socket.on("msg", function(data) {
-    handleSocketMessage(data);
-  });
+socket.on("msg", function(data) {
+  handleSocketMessage(data);
+});
 
-  socket.on("votes.update", function(votes) {
-    api.trigger("votes.update", [votes]);
-  });
+socket.on("votes.update", function(votes) {
+  api.trigger("votes.update", [votes]);
+});
 
-  socket.on("conversation.type.set", function(conversation) {
-    api.trigger("conversation.type.set", [conversation]);
-  });
+socket.on("conversation.type.set", function(conversation) {
+  api.trigger("conversation.type.set", [conversation]);
+});
 
-  socket.on("active.peer", function(peerId) {
-    api.trigger("active.peer", [peerId]);
-  });
+socket.on("active.peer", function(peerId) {
+  api.trigger("active.peer", [peerId]);
+});
 
-  socket.on("time.left", function(secondsLeft) {
-    api.trigger("time.left", [secondsLeft]);
-  });
-}
+socket.on("time.left", function(secondsLeft) {
+  api.trigger("time.left", [secondsLeft]);
+});
 
-function addApiHandlers(api) {
-  api.on("votes.increment", function(peerId) {
-    socket.emit("votes.increment", {
-      id: peerId
-    });
-  });
-
-  api.on("conversation.type.selected", function(type) {
-    // We trigger the api again so we update the current user also. NOTE: We should not do that as the server must set this when all users have selected
-    // api.trigger("conversation.type.set", [
-    //   {
-    //     type: type
-    //   }
-    // ]);
-    socket.emit("conversation.type.selected", {
-      type: type
-    });
-  });
-}
-
+/*
+  The api variable is a way for Room.vue and Room.js to communicate.
+  Room.js is the only place that we have access to the socket.
+  In this way when we need to make a change in the view based on an event from a socket we can trigger in Room.js an event
+  that Room.vue will listen to and apply the change to the view
+*/
 var api = {
-  joinRoom: function(r) {
+  joinRoom: function(room) {
     let initPromise = new Promise((resolve, reject) => {
       if (!connected) {
         socket.emit(
           "init",
           {
-            room: r
+            room: room
           },
           function(roomid, id) {
             resolve();
@@ -234,13 +219,22 @@ var api = {
 var eventEmitter = new EventEmitter();
 Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter));
 
-addSocketHandlers(socket);
-addApiHandlers(api);
+api.on("votes.increment", function(peerId) {
+  socket.emit("votes.increment", {
+    id: peerId
+  });
+});
 
-/*
-    The api variable is a way for Room.vue and Room.js to communicate.
-    Room.js is the only place that we have access to the socket.
-    In this way when we need to make a change in the view based on an event from a socket we can trigger in Room.js an event
-    that Room.vue will listen to and apply the change to the view
-*/
+api.on("conversation.type.selected", function(type) {
+  // We trigger the api again so we update the current user also. NOTE: We should not do that as the server must set this when all users have selected
+  // api.trigger("conversation.type.set", [
+  //   {
+  //     type: type
+  //   }
+  // ]);
+  socket.emit("conversation.type.selected", {
+    type: type
+  });
+});
+
 export default api;
