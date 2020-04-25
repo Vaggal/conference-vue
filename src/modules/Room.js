@@ -198,7 +198,8 @@ var api = {
   },
   createRoom: function() {
     let initPromise = new Promise(resolve => {
-      socket.emit("init", null, function(roomid, id) {
+      socket.emit("init", null, function(roomid, id, conversation) {
+        api.trigger("conversation.type.set", [conversation]);
         resolve(roomid);
         roomId = roomid;
         currentId = id;

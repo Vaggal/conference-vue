@@ -112,7 +112,9 @@ export default {
       peers: [],
       activePeer: {},
       votes: {},
-      conversation: {},
+      conversation: {
+        type: ""
+      },
       countdown: {
         secondsLeft: undefined,
         updateId: undefined
@@ -240,7 +242,7 @@ export default {
       return Object.keys(this.activePeer).length > 0;
     },
     conversationIsSet() {
-      return Object.keys(this.conversation).length > 0;
+      return this.conversation.type !== "";
     },
     getPeerFromId(peerId) {
       if (this.self.id == peerId) {
