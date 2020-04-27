@@ -45,8 +45,9 @@ export default {
         countdown: true
       });
       this.timer.addEventListener("secondsUpdated", () => {
-        this.minutes = this.timer.getTotalTimeValues().minutes;
-        this.seconds = this.timer.getTotalTimeValues().seconds;
+        let timeValues = this.timer.getTimeValues();
+        this.minutes = timeValues.minutes;
+        this.seconds = timeValues.seconds;
       });
     }
   }
