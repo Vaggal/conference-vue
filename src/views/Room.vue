@@ -210,10 +210,15 @@ export default {
     });
 
     Room.on("active.peer", peerId => {
-      // TODO: reset peer.active to false as it is not reset probably because of some weird reference
       if (this.activePeerExists()) {
         this.activePeer.active == false;
         this.activePeer.stream.getTracks().forEach(track => {
+          track.enabled = false;
+        });
+
+        let peerToDeactivate = this.getPeerFromId(this.activePeer.id);
+        peerToDeactivate.active = false;
+        peerToDeactivate.stream.getTracks().forEach(track => {
           track.enabled = false;
         });
       }
