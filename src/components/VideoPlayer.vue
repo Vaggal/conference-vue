@@ -8,7 +8,7 @@ export default {
   props: {
     peerIndex: {
       type: Number,
-      default: 0
+      default: 1000
     },
     peerStream: MediaStream
   },
@@ -22,9 +22,6 @@ export default {
       // We need this so that it will update peerIndexId and the updated hook triggers
       this.peerIndexId = "peer" + this.peerIndex;
     }
-  },
-  mounted() {
-    this.setVideoStream();
   },
   updated() {
     this.setVideoStream();

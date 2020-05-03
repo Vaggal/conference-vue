@@ -43,6 +43,18 @@
               :peer-stream="activePeer.stream"
             ></VideoPlayer>
           </div>
+          <!-- this will be used when we will want to display more than one peers at the same time
+          <div
+            v-for="(peer, key) in peers"
+            :key="key"
+            class="col-sm d-flex justify-content-center"
+          >
+            <VideoPlayer
+              :peer-index="key"
+              :peer-stream="peer.stream"
+            ></VideoPlayer>
+          </div>
+          -->
         </div>
 
         <div class="row mt-2">
@@ -199,6 +211,11 @@ export default {
 
       if (conversation.type === "loose") {
         this.conversation.friendlyType = "Loose";
+
+        // TODO: This somehow needs to be changed to activate all peers and show all of them
+        if (this.peers.length <= 1) {
+          this.activatePeer(this.peers[0]);
+        }
       } else if (conversation.type === "byturn") {
         this.conversation.friendlyType = "By Turn";
       }
@@ -223,13 +240,7 @@ export default {
         });
       }
 
-      let peerToActivate = this.getPeerFromId(peerId);
-
-      this.activePeer = peerToActivate;
-      this.activePeer.active = true;
-      this.activePeer.stream.getTracks().forEach(track => {
-        track.enabled = true;
-      });
+      this.activatePeer(this.getPeerFromId(peerId));
     });
   },
   mounted() {
@@ -264,6 +275,13 @@ export default {
       if (event.target.value === "byturn" || event.target.value === "loose") {
         Room.trigger("conversation.type.selected", [event.target.value]);
       }
+    },
+    activatePeer(peerToActivate) {
+      this.activePeer = peerToActivate;
+      this.activePeer.active = true;
+      this.activePeer.stream.getTracks().forEach(track => {
+        track.enabled = true;
+      });
     }
   }
 };
