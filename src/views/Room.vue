@@ -25,12 +25,7 @@
       </div>
       <div id="mainArea" class="col-xs col-sm-7">
         <div id="video-wrapper" class="row">
-          <div
-            v-show="error"
-            id="errorAlert"
-            class="alert alert-warning"
-            role="alert"
-          >
+          <div v-show="error" id="errorAlert" class="alert alert-warning" role="alert">
             <span>{{ error }}</span>
           </div>
           <div id="localVideoContainer">
@@ -111,7 +106,7 @@ export default {
     VideoPlayer,
     PeerThumbnail,
     SelfThumbnail,
-    Countdown
+    Countdown,
   },
   data() {
     return {
@@ -119,18 +114,18 @@ export default {
       self: {
         id: undefined,
         stream: undefined,
-        active: false
+        active: false,
       },
       peers: [],
       activePeer: {},
       votes: {},
       conversation: {
-        type: ""
+        type: "",
       },
       countdown: {
         secondsLeft: undefined,
-        updateId: undefined
-      }
+        updateId: undefined,
+      },
     };
   },
   beforeMount() {
@@ -141,16 +136,16 @@ export default {
     }
 
     LocalVideoStream.get().then(
-      stream => {
+      (stream) => {
         this.self.stream = stream;
         Room.init(this.self.stream);
 
         if (!this.$route.params.roomId) {
-          Room.createRoom().then(roomId => {
+          Room.createRoom().then((roomId) => {
             this.self.id = Room.getSelfId();
             this.$router.push({
               name: "active-room",
-              params: { roomId: roomId }
+              params: { roomId: roomId },
             });
           });
         } else {
@@ -168,10 +163,10 @@ export default {
       }
     );
 
-    Room.on("peer.track", peer => {
+    Room.on("peer.track", (peer) => {
       let isNewPeer = true;
 
-      this.peers.forEach(existingPeer => {
+      this.peers.forEach((existingPeer) => {
         // Peer already exists so we just add the track to their MediaStream object
         if (existingPeer.id === peer.id) {
           isNewPeer = false;
@@ -190,23 +185,23 @@ export default {
         this.peers.push({
           id: peer.id,
           stream: peerMediaStream,
-          active: false
+          active: false,
         });
       }
     });
 
-    Room.on("peer.disconnected", peer => {
+    Room.on("peer.disconnected", (peer) => {
       console.log("Client disconnected, removing stream");
-      this.peers = this.peers.filter(p => {
+      this.peers = this.peers.filter((p) => {
         return p.id !== peer.id;
       });
     });
 
-    Room.on("votes.update", votes => {
+    Room.on("votes.update", (votes) => {
       this.votes = votes;
     });
 
-    Room.on("conversation.type.set", conversation => {
+    Room.on("conversation.type.set", (conversation) => {
       this.conversation = conversation;
 
       if (conversation.type === "loose") {
@@ -221,21 +216,21 @@ export default {
       }
     });
 
-    Room.on("time.left", secondsLeft => {
+    Room.on("time.left", (secondsLeft) => {
       this.countdown.secondsLeft = secondsLeft;
       this.countdown.updateId = uuid();
     });
 
-    Room.on("active.peer", peerId => {
+    Room.on("active.peer", (peerId) => {
       if (this.activePeerExists()) {
         this.activePeer.active == false;
-        this.activePeer.stream.getTracks().forEach(track => {
+        this.activePeer.stream.getTracks().forEach((track) => {
           track.enabled = false;
         });
 
         let peerToDeactivate = this.getPeerFromId(this.activePeer.id);
         peerToDeactivate.active = false;
-        peerToDeactivate.stream.getTracks().forEach(track => {
+        peerToDeactivate.stream.getTracks().forEach((track) => {
           track.enabled = false;
         });
       }
@@ -279,11 +274,11 @@ export default {
     activatePeer(peerToActivate) {
       this.activePeer = peerToActivate;
       this.activePeer.active = true;
-      this.activePeer.stream.getTracks().forEach(track => {
+      this.activePeer.stream.getTracks().forEach((track) => {
         track.enabled = true;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -14,23 +14,23 @@ export default {
     votingEnabled: Boolean,
     peerId: {
       type: Number,
-      default: 0
+      default: 0,
     },
     peerActive: Boolean,
     peerVotes: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   data() {
     return {
-      votes: this.peerVotes
+      votes: this.peerVotes,
     };
   },
   watch: {
-    peerVotes: function() {
+    peerVotes: function () {
       this.votes = this.peerVotes;
-    }
+    },
   },
   methods: {
     incrementVotes() {
@@ -38,8 +38,8 @@ export default {
         this.votes++;
         this.$emit("votes-increment", this.peerId);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

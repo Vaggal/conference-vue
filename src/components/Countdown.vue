@@ -10,27 +10,27 @@ export default {
   props: {
     secondsLeft: {
       type: Number,
-      default: 0
+      default: 0,
     },
     updateId: {
       type: String,
-      default: "0"
-    }
+      default: "0",
+    },
   },
   data() {
     return {
       timer: new Timer(),
       minutes: 0,
-      seconds: 0
+      seconds: 0,
     };
   },
   watch: {
     updateId: {
       immediate: true,
-      handler: function() {
+      handler: function () {
         this.startTimer();
-      }
-    }
+      },
+    },
   },
   methods: {
     startTimer() {
@@ -38,19 +38,19 @@ export default {
       this.timer.stop();
       this.timer.start({
         startValues: {
-          seconds: this.secondsLeft
+          seconds: this.secondsLeft,
         },
         precision: "seconds",
         target: 0,
-        countdown: true
+        countdown: true,
       });
       this.timer.addEventListener("secondsUpdated", () => {
         let timeValues = this.timer.getTimeValues();
         this.minutes = timeValues.minutes;
         this.seconds = timeValues.seconds;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

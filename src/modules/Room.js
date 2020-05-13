@@ -23,25 +23,25 @@ function createNewPeerConnection(id) {
   var peerConnection = new RTCPeerConnection(Config.RTCConfiguration);
   peerConnections[id] = peerConnection;
 
-  localStream.getTracks().forEach(track => {
+  localStream.getTracks().forEach((track) => {
     peerConnection.addTrack(track, localStream);
   });
 
-  peerConnection.onicecandidate = function(event) {
+  peerConnection.onicecandidate = function (event) {
     socket.emit("msg", {
       by: currentId,
       to: id,
       ice: event.candidate,
-      type: "ice"
+      type: "ice",
     });
   };
 
-  peerConnection.ontrack = function(rtcTrackEvent) {
+  peerConnection.ontrack = function (rtcTrackEvent) {
     api.trigger("peer.track", [
       {
         id: id,
-        track: rtcTrackEvent.track
-      }
+        track: rtcTrackEvent.track,
+      },
     ]);
   };
 
@@ -56,10 +56,10 @@ function makeOffer(id) {
     .createOffer({
       mandatory: {
         offerToReceiveVideo: true,
-        offerToReceiveAudio: true
-      }
+        offerToReceiveAudio: true,
+      },
     })
-    .then(sdp => {
+    .then((sdp) => {
       peerConnection.setLocalDescription(sdp);
       console.log("Creating an offer for", id);
 
@@ -67,10 +67,10 @@ function makeOffer(id) {
         by: currentId,
         to: id,
         sdp: sdp,
-        type: "sdp-offer"
+        type: "sdp-offer",
       });
     })
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
     });
 }
@@ -94,21 +94,21 @@ function handleSocketMessage(data) {
 
           peerConnection
             .createAnswer()
-            .then(sdp => {
+            .then((sdp) => {
               peerConnection.setLocalDescription(sdp);
 
               socket.emit("msg", {
                 by: currentId,
                 to: data.by,
                 sdp: sdp,
-                type: "sdp-answer"
+                type: "sdp-answer",
               });
             })
-            .catch(e => {
+            .catch((e) => {
               console.log(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
         });
 
@@ -121,7 +121,7 @@ function handleSocketMessage(data) {
         .then(() => {
           console.log("Setting remote description by answer");
         })
-        .catch(e => {
+        .catch((e) => {
           console.error(e);
         });
 
@@ -139,31 +139,31 @@ function handleSocketMessage(data) {
 
 var socket = Io.connect(Config.SignalingServerUrl);
 
-socket.on("peer.connected", function(peer) {
+socket.on("peer.connected", function (peer) {
   makeOffer(peer.id);
 });
 
-socket.on("peer.disconnected", function(peer) {
+socket.on("peer.disconnected", function (peer) {
   api.trigger("peer.disconnected", [peer]);
 });
 
-socket.on("msg", function(data) {
+socket.on("msg", function (data) {
   handleSocketMessage(data);
 });
 
-socket.on("votes.update", function(votes) {
+socket.on("votes.update", function (votes) {
   api.trigger("votes.update", [votes]);
 });
 
-socket.on("conversation.type.set", function(conversation) {
+socket.on("conversation.type.set", function (conversation) {
   api.trigger("conversation.type.set", [conversation]);
 });
 
-socket.on("active.peer", function(peerId) {
+socket.on("active.peer", function (peerId) {
   api.trigger("active.peer", [peerId]);
 });
 
-socket.on("time.left", function(secondsLeft) {
+socket.on("time.left", function (secondsLeft) {
   api.trigger("time.left", [secondsLeft]);
 });
 
@@ -174,15 +174,15 @@ socket.on("time.left", function(secondsLeft) {
   that Room.vue will listen to and apply the change to the view
 */
 var api = {
-  joinRoom: function(room) {
+  joinRoom: function (room) {
     let initPromise = new Promise((resolve, reject) => {
       if (!connected) {
         socket.emit(
           "init",
           {
-            room: room
+            room: room,
           },
-          function(roomid, id) {
+          function (roomid, id) {
             resolve();
             currentId = id;
             roomId = roomid;
@@ -196,9 +196,9 @@ var api = {
 
     return initPromise;
   },
-  createRoom: function() {
-    let initPromise = new Promise(resolve => {
-      socket.emit("init", null, function(roomid, id, conversation) {
+  createRoom: function () {
+    let initPromise = new Promise((resolve) => {
+      socket.emit("init", null, function (roomid, id, conversation) {
         api.trigger("conversation.type.set", [conversation]);
         resolve(roomid);
         roomId = roomid;
@@ -209,24 +209,24 @@ var api = {
 
     return initPromise;
   },
-  init: function(stream) {
+  init: function (stream) {
     localStream = stream;
   },
-  getSelfId: function() {
+  getSelfId: function () {
     return currentId;
-  }
+  },
 };
 
 var eventEmitter = new EventEmitter();
 Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter));
 
-api.on("votes.increment", function(peerId) {
+api.on("votes.increment", function (peerId) {
   socket.emit("votes.increment", {
-    id: peerId
+    id: peerId,
   });
 });
 
-api.on("conversation.type.selected", function(type) {
+api.on("conversation.type.selected", function (type) {
   // We trigger the api again so we update the current user also. NOTE: We should not do that as the server must set this when all users have selected
   // api.trigger("conversation.type.set", [
   //   {
@@ -234,7 +234,7 @@ api.on("conversation.type.selected", function(type) {
   //   }
   // ]);
   socket.emit("conversation.type.selected", {
-    type: type
+    type: type,
   });
 });
 

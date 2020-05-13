@@ -35,7 +35,7 @@ function onResizeMove(event) {
   target.setAttribute("data-y", y);
 }
 
-let setup = function(videoLocalElement) {
+let setup = function (videoLocalElement) {
   interact(videoLocalElement)
     .draggable({
       inertia: true,
@@ -46,10 +46,10 @@ let setup = function(videoLocalElement) {
           top: 0,
           left: 0,
           bottom: 1,
-          right: 1
-        }
+          right: 1,
+        },
       },
-      onmove: window.dragMoveListener
+      onmove: window.dragMoveListener,
     })
     .resizable({
       preserveAspectRatio: true,
@@ -58,23 +58,23 @@ let setup = function(videoLocalElement) {
         left: true,
         right: true,
         bottom: true,
-        top: true
+        top: true,
       },
       restrictEdges: {
         outer: "parent",
-        endOnly: true
+        endOnly: true,
       },
       restrictSize: {
         min: {
           width: 100,
-          height: 100
-        }
-      }
+          height: 100,
+        },
+      },
     })
     .on("dragmove", onDragMove)
     .on("resizemove", onResizeMove);
 };
 
 export default {
-  setup: setup
+  setup: setup,
 };

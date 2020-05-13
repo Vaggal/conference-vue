@@ -1,9 +1,7 @@
 <template>
   <div :class="{ active: selfActive }">
     <font-awesome-icon icon="user-alt" class="fa-3x" />
-    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">{{
-      votes
-    }}</span>
+    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">{{ votes }}</span>
   </div>
 </template>
 
@@ -15,19 +13,19 @@ export default {
     selfActive: Boolean,
     selfVotes: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   data() {
     return {
-      votes: this.selfVotes
+      votes: this.selfVotes,
     };
   },
   watch: {
-    selfVotes: function() {
+    selfVotes: function () {
       this.votes = this.selfVotes;
-    }
-  }
+    },
+  },
 };
 </script>
 

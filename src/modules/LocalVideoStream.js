@@ -2,10 +2,10 @@ var stream;
 
 var mediaConstraints = {
   audio: true,
-  video: true
+  video: true,
 };
 
-let get = function() {
+let get = function () {
   let getUserMediaPromise = new Promise((resolve, reject) => {
     // The if clause should be useful but I have not figured out yet for what :P
     if (stream) {
@@ -13,11 +13,11 @@ let get = function() {
     } else {
       navigator.mediaDevices
         .getUserMedia(mediaConstraints)
-        .then(mediaStream => {
+        .then((mediaStream) => {
           stream = mediaStream;
           resolve(stream);
         })
-        .catch(error => {
+        .catch((error) => {
           reject(error);
         });
     }
@@ -27,5 +27,5 @@ let get = function() {
 };
 
 export default {
-  get: get
+  get: get,
 };

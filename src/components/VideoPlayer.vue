@@ -8,20 +8,20 @@ export default {
   props: {
     peerIndex: {
       type: Number,
-      default: 1000
+      default: 1000,
     },
-    peerStream: MediaStream
+    peerStream: MediaStream,
   },
   data() {
     return {
-      peerIndexId: "peer" + this.peerIndex
+      peerIndexId: "peer" + this.peerIndex,
     };
   },
   watch: {
-    peerIndex: function() {
+    peerIndex: function () {
       // We need this so that it will update peerIndexId and the updated hook triggers
       this.peerIndexId = "peer" + this.peerIndex;
-    }
+    },
   },
   updated() {
     this.setVideoStream();
@@ -30,8 +30,8 @@ export default {
     setVideoStream() {
       let peerVideoElement = document.getElementById(this.peerIndexId);
       peerVideoElement.srcObject = this.peerStream;
-    }
-  }
+    },
+  },
 };
 </script>
 

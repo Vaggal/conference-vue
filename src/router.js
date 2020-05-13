@@ -11,17 +11,17 @@ export default new Router({
     {
       path: "/room/:roomId",
       name: "active-room",
-      component: Room
+      component: Room,
     },
     {
       path: "/room",
       name: "room",
-      component: Room
+      component: Room,
     },
     {
       path: "*",
       name: "default-room",
-      component: Room
-    }
-  ]
+      component: Room,
+    },
+  ],
 });
