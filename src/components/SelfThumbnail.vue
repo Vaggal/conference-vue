@@ -1,7 +1,9 @@
 <template>
   <div :class="{ active: selfActive }">
     <font-awesome-icon icon="user-alt" class="fa-3x" />
-    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">{{ votes }}</span>
+    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">{{
+      votes
+    }}</span>
   </div>
 </template>
 

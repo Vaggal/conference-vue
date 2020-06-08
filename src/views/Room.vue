@@ -25,7 +25,12 @@
       </div>
       <div id="mainArea" class="col-xs col-sm-7">
         <div id="video-wrapper" class="row">
-          <div v-show="error" id="errorAlert" class="alert alert-warning" role="alert">
+          <div
+            v-show="error"
+            id="errorAlert"
+            class="alert alert-warning"
+            role="alert"
+          >
             <span>{{ error }}</span>
           </div>
           <div id="localVideoContainer">
@@ -94,7 +99,7 @@ import Countdown from "@/components/Countdown.vue";
 
 // import $ from 'jquery';
 import "bootstrap";
-import { v4 as uuid } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 import Room from "@/modules/Room";
 import InteractiveVideo from "@/modules/InteractiveVideo";
@@ -218,7 +223,7 @@ export default {
 
     Room.on("time.left", (secondsLeft) => {
       this.countdown.secondsLeft = secondsLeft;
-      this.countdown.updateId = uuid();
+      this.countdown.updateId = uuidv4();
     });
 
     Room.on("active.peer", (peerId) => {
