@@ -45,6 +45,7 @@ export default {
         countdown: true,
       });
       this.timer.addEventListener("secondsUpdated", () => {
+        // TODO: single digits 6 or 06?
         let timeValues = this.timer.getTimeValues();
         this.minutes = timeValues.minutes;
         this.seconds = timeValues.seconds;

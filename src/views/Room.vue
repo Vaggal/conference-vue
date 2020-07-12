@@ -22,15 +22,15 @@
           <br />
           <strong>{{ conversation.friendlyType }}</strong>
         </div>
+        <Countdown
+          v-if="countdown.secondsLeft !== undefined"
+          :seconds-left="countdown.secondsLeft"
+          :update-id="countdown.updateId"
+        ></Countdown>
       </div>
       <div id="mainArea" class="col-xs col-sm-7">
         <div id="video-wrapper" class="row">
-          <div
-            v-show="error"
-            id="errorAlert"
-            class="alert alert-warning"
-            role="alert"
-          >
+          <div v-show="error" id="errorAlert" class="alert alert-warning">
             <span>{{ error }}</span>
           </div>
           <div id="localVideoContainer">
@@ -81,11 +81,7 @@
         </div>
       </div>
       <div class="col-xs col-sm-2">
-        <Countdown
-          v-if="countdown.secondsLeft !== undefined"
-          :seconds-left="countdown.secondsLeft"
-          :update-id="countdown.updateId"
-        ></Countdown>
+        <Chat></Chat>
       </div>
     </div>
   </div>
@@ -96,6 +92,7 @@ import VideoPlayer from "@/components/VideoPlayer.vue";
 import PeerThumbnail from "@/components/PeerThumbnail.vue";
 import SelfThumbnail from "@/components/SelfThumbnail.vue";
 import Countdown from "@/components/Countdown.vue";
+import Chat from "@/components/Chat.vue";
 
 // import $ from 'jquery';
 import "bootstrap";
@@ -112,6 +109,7 @@ export default {
     PeerThumbnail,
     SelfThumbnail,
     Countdown,
+    Chat,
   },
   data() {
     return {

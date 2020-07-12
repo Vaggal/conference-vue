@@ -5,9 +5,6 @@ import EventEmitter from "wolfy87-eventemitter";
 
 var peerConnections = {};
 var currentId;
-// TODO: roomId is not used and it may cause problems
-// eslint-disable-next-line no-unused-vars
-var roomId;
 var localStream;
 var connected = false;
 
@@ -185,7 +182,6 @@ var api = {
           function (roomid, id) {
             resolve();
             currentId = id;
-            roomId = roomid;
           }
         );
         connected = true;
@@ -201,7 +197,6 @@ var api = {
       socket.emit("init", null, function (roomid, id, conversation) {
         api.trigger("conversation.type.set", [conversation]);
         resolve(roomid);
-        roomId = roomid;
         currentId = id;
         connected = true;
       });
