@@ -8,6 +8,7 @@
 </template>
 
 <script>
+// TODO: Why do we need selfVotes property AND votes variable???
 export default {
   name: "SelfThumbnail",
   props: {

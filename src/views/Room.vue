@@ -80,8 +80,8 @@
           </div>
         </div>
       </div>
-      <div class="col-xs col-sm-2">
-        <Chat></Chat>
+      <div class="col-sm-3">
+        <Chat :comments="comments" @new-comment="sendComment"></Chat>
       </div>
     </div>
   </div>
@@ -129,6 +129,7 @@ export default {
         secondsLeft: undefined,
         updateId: undefined,
       },
+      comments: [],
     };
   },
   beforeMount() {
@@ -198,6 +199,10 @@ export default {
       this.peers = this.peers.filter((p) => {
         return p.id !== peer.id;
       });
+    });
+
+    Room.on("comment", (comment) => {
+      this.comments.push(comment);
     });
 
     Room.on("votes.update", (votes) => {
@@ -280,6 +285,9 @@ export default {
       this.activePeer.stream.getTracks().forEach((track) => {
         track.enabled = true;
       });
+    },
+    sendComment(message) {
+      Room.trigger("new-comment", [message, this.self.id]);
     },
   },
 };

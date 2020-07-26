@@ -147,6 +147,9 @@ socket.on("peer.disconnected", function (peer) {
 socket.on("msg", function (data) {
   handleSocketMessage(data);
 });
+socket.on("comment", function (comment) {
+  api.trigger("comment", [comment]);
+});
 
 socket.on("votes.update", function (votes) {
   api.trigger("votes.update", [votes]);
@@ -222,14 +225,14 @@ api.on("votes.increment", function (peerId) {
 });
 
 api.on("conversation.type.selected", function (type) {
-  // We trigger the api again so we update the current user also. NOTE: We should not do that as the server must set this when all users have selected
-  // api.trigger("conversation.type.set", [
-  //   {
-  //     type: type
-  //   }
-  // ]);
   socket.emit("conversation.type.selected", {
     type: type,
+  });
+});
+api.on("new-comment", function (message, id) {
+  socket.emit("new-comment", {
+    message: message,
+    id: id,
   });
 });
 
