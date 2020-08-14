@@ -81,7 +81,11 @@
         </div>
       </div>
       <div class="col-sm-3">
-        <Chat :comments="comments" @new-comment="sendComment"></Chat>
+        <Chat
+          :comments="comments"
+          :self-id="self.id"
+          @new-comment="sendComment"
+        ></Chat>
       </div>
     </div>
   </div>

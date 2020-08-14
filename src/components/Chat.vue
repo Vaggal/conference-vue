@@ -18,7 +18,12 @@
         <div
           v-for="(comment, key) in comments"
           :key="key"
-          class="d-flex justify-content-start mb-4"
+          class="d-flex mb-4"
+          :class="[
+            comment.userId == selfId
+              ? 'justify-content-start'
+              : 'justify-content-end',
+          ]"
         >
           <div class="img_cont_msg">
             <img
@@ -26,9 +31,16 @@
               class="rounded-circle user_img_msg"
             />
           </div>
-          <div class="msg_cotainer">
+          <div
+            :class="[
+              comment.userId == selfId ? 'msg_cotainer' : 'msg_cotainer_send',
+            ]"
+          >
             {{ comment.message }}
-            <span class="msg_time">{{ comment.date }}</span>
+            <span
+              :class="[comment.userId == selfId ? 'msg_time' : 'msg_time_send']"
+              >{{ comment.date }}</span
+            >
           </div>
         </div>
       </div>
@@ -62,6 +74,10 @@ export default {
     comments: {
       type: Array,
       default: () => [],
+    },
+    selfId: {
+      type: Number,
+      default: 0,
     },
   },
   data() {
