@@ -8,7 +8,7 @@
           </div>
         </div>
         <span id="action_menu_btn">
-          <i class="fas fa-ellipsis-v"></i>
+          <font-awesome-icon icon="ellipsis-v" />
         </span>
         <div class="action_menu">
           <ul></ul>
@@ -21,24 +21,22 @@
           class="d-flex mb-4"
           :class="[
             comment.userId == selfId
-              ? 'justify-content-start'
-              : 'justify-content-end',
+              ? 'justify-content-end'
+              : 'justify-content-start',
           ]"
         >
           <div class="img_cont_msg">
-            <img
-              src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-              class="rounded-circle user_img_msg"
-            />
+            <span>T</span>
           </div>
           <div
             :class="[
-              comment.userId == selfId ? 'msg_cotainer' : 'msg_cotainer_send',
+              comment.userId == selfId ? 'msg_cotainer_send' : 'msg_cotainer',
             ]"
           >
+            <!-- TODO: insert username in different colour -->
             {{ comment.message }}
             <span
-              :class="[comment.userId == selfId ? 'msg_time' : 'msg_time_send']"
+              :class="[comment.userId == selfId ? 'msg_time_send' : 'msg_time']"
               >{{ comment.date }}</span
             >
           </div>
@@ -48,7 +46,7 @@
         <div class="input-group">
           <div class="input-group-append">
             <span class="input-group-text attach_btn">
-              <i class="fas fa-paperclip"></i>
+              <font-awesome-icon icon="paperclip" />
             </span>
           </div>
           <textarea
@@ -58,7 +56,7 @@
           ></textarea>
           <div class="input-group-append" @click="sendComment($event)">
             <span class="input-group-text send_btn">
-              <i class="fas fa-location-arrow"></i>
+              <font-awesome-icon icon="location-arrow" />
             </span>
           </div>
         </div>
@@ -90,6 +88,7 @@ export default {
   methods: {
     sendComment() {
       this.$emit("new-comment", this.message);
+      this.message = "";
     },
   },
 };
@@ -186,6 +185,16 @@ html {
 .img_cont_msg {
   height: 40px;
   width: 40px;
+  border: 1.5px solid #f5f6fa;
+  border-radius: 50% !important;
+  display: flex;
+  align-items: center;
+  color: white;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2em;
+  background-color: gray;
+  margin-right: 2px;
 }
 .user_info {
   margin-top: auto;

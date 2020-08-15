@@ -8,9 +8,15 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import { faUser, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faUserAlt,
+  faEllipsisV,
+  faLocationArrow,
+  faPaperclip,
+} from "@fortawesome/free-solid-svg-icons";
 
-library.add([faUser, faUserAlt]);
+library.add([faUser, faUserAlt, faEllipsisV, faLocationArrow, faPaperclip]);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.config.productionTip = false;
