@@ -88,6 +88,34 @@
         ></Chat>
       </div>
     </div>
+    <div class="overlay" :class="{ invisible: usernameSaved }">
+      <div class="centering-wrapper">
+        <div class="form-container">
+          <div class="note mb-2">
+            Please set a username before entering the chat
+          </div>
+          <form id="username-form" class="form-inline">
+            <div class="form-group">
+              <input
+                id="username-input"
+                v-model="self.username"
+                type="text"
+                class="form-control"
+                aria-describedby="username"
+                placeholder="Enter username"
+              />
+            </div>
+            <button
+              type="button"
+              class="btn btn-primary ml-1"
+              @click="saveUsername()"
+            >
+              Save
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -117,8 +145,10 @@ export default {
   },
   data() {
     return {
+      usernameSaved: false,
       error: "",
       self: {
+        username: "",
         id: undefined,
         stream: undefined,
         active: false,
@@ -136,123 +166,11 @@ export default {
       comments: [],
     };
   },
-  beforeMount() {
-    if (!window.RTCPeerConnection || !navigator.getUserMedia) {
-      this.error =
-        "WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.";
-      return;
-    }
-
-    LocalVideoStream.get().then(
-      (stream) => {
-        this.self.stream = stream;
-        Room.init(this.self.stream);
-
-        if (!this.$route.params.roomId) {
-          Room.createRoom().then((roomId) => {
-            this.self.id = Room.getSelfId();
-            this.$router.push({
-              name: "active-room",
-              params: { roomId: roomId },
-            });
-          });
-        } else {
-          Room.joinRoom(this.$route.params.roomId).then(() => {
-            this.self.id = Room.getSelfId();
-          });
-        }
-
-        let localVideo = document.getElementById("localVideo");
-        localVideo.srcObject = this.self.stream;
-      },
-      () => {
-        this.error =
-          "No audio/video permissions. Please refresh your browser and allow the audio/video capturing.";
-      }
-    );
-
-    Room.on("peer.track", (peer) => {
-      let isNewPeer = true;
-
-      this.peers.forEach((existingPeer) => {
-        // Peer already exists so we just add the track to their MediaStream object
-        if (existingPeer.id === peer.id) {
-          isNewPeer = false;
-          console.log("Adding new track for client");
-          peer.track.enabled = false; // We need the stream to be disable by default
-          existingPeer.stream.addTrack(peer.track);
-        }
-      });
-
-      // Peer is new so we create their MediaStream, add the first track and update the peers list
-      if (isNewPeer) {
-        console.log("Adding new client and first track");
-        let peerMediaStream = new MediaStream();
-        peerMediaStream.addTrack(peer.track);
-
-        this.peers.push({
-          id: peer.id,
-          stream: peerMediaStream,
-          active: false,
-        });
-      }
-    });
-
-    Room.on("peer.disconnected", (peer) => {
-      console.log("Client disconnected, removing stream");
-      this.peers = this.peers.filter((p) => {
-        return p.id !== peer.id;
-      });
-    });
-
-    Room.on("comment", (comment) => {
-      this.comments.push(comment);
-    });
-
-    Room.on("votes.update", (votes) => {
-      this.votes = votes;
-    });
-
-    Room.on("conversation.type.set", (conversation) => {
-      this.conversation = conversation;
-
-      if (conversation.type === "loose") {
-        this.conversation.friendlyType = "Loose";
-
-        // TODO: This somehow needs to be changed to activate all peers and show all of them
-        if (this.peers.length <= 1) {
-          this.activatePeer(this.peers[0]);
-        }
-      } else if (conversation.type === "byturn") {
-        this.conversation.friendlyType = "By Turn";
-      }
-    });
-
-    Room.on("time.left", (secondsLeft) => {
-      this.countdown.secondsLeft = secondsLeft;
-      this.countdown.updateId = uuidv4();
-    });
-
-    Room.on("active.peer", (peerId) => {
-      if (this.activePeerExists()) {
-        this.activePeer.active == false;
-        this.activePeer.stream.getTracks().forEach((track) => {
-          track.enabled = false;
-        });
-
-        let peerToDeactivate = this.getPeerFromId(this.activePeer.id);
-        peerToDeactivate.active = false;
-        peerToDeactivate.stream.getTracks().forEach((track) => {
-          track.enabled = false;
-        });
-      }
-
-      this.activatePeer(this.getPeerFromId(peerId));
-    });
-  },
+  beforeMount() {},
   mounted() {
     let localVideoElement = document.getElementById("localVideo");
     InteractiveVideo.setup(localVideoElement);
+    // TODO:
   },
   methods: {
     isNumeric(value) {
@@ -293,6 +211,125 @@ export default {
     sendComment(message) {
       Room.trigger("new-comment", [message, this.self.id]);
     },
+    saveUsername() {
+      this.usernameSaved = true;
+      this.setupSocketCommunication();
+    },
+    setupSocketCommunication() {
+      if (!window.RTCPeerConnection || !navigator.getUserMedia) {
+        this.error =
+          "WebRTC is not supported by your browser. You can try the app with Chrome and Firefox.";
+        return;
+      }
+
+      LocalVideoStream.get().then(
+        (stream) => {
+          this.self.stream = stream;
+          Room.init(this.self.stream);
+
+          if (!this.$route.params.roomId) {
+            Room.createRoom().then((roomId) => {
+              this.self.id = Room.getSelfId();
+              this.$router.push({
+                name: "active-room",
+                params: { roomId: roomId },
+              });
+            });
+          } else {
+            Room.joinRoom(this.$route.params.roomId).then(() => {
+              this.self.id = Room.getSelfId();
+            });
+          }
+
+          let localVideo = document.getElementById("localVideo");
+          localVideo.srcObject = this.self.stream;
+        },
+        () => {
+          this.error =
+            "No audio/video permissions. Please refresh your browser and allow the audio/video capturing.";
+        }
+      );
+
+      Room.on("peer.track", (peer) => {
+        let isNewPeer = true;
+
+        this.peers.forEach((existingPeer) => {
+          // Peer already exists so we just add the track to their MediaStream object
+          if (existingPeer.id === peer.id) {
+            isNewPeer = false;
+            console.log("Adding new track for client");
+            peer.track.enabled = false; // We need the stream to be disable by default
+            existingPeer.stream.addTrack(peer.track);
+          }
+        });
+
+        // Peer is new so we create their MediaStream, add the first track and update the peers list
+        if (isNewPeer) {
+          console.log("Adding new client and first track");
+          let peerMediaStream = new MediaStream();
+          peerMediaStream.addTrack(peer.track);
+
+          console.log("Incoming Peer: ", peer);
+          this.peers.push({
+            id: peer.id,
+            stream: peerMediaStream,
+            active: false,
+          });
+        }
+      });
+
+      Room.on("peer.disconnected", (peer) => {
+        console.log("Client disconnected, removing stream");
+        this.peers = this.peers.filter((p) => {
+          return p.id !== peer.id;
+        });
+      });
+
+      Room.on("comment", (comment) => {
+        this.comments.push(comment);
+      });
+
+      Room.on("votes.update", (votes) => {
+        this.votes = votes;
+      });
+
+      Room.on("conversation.type.set", (conversation) => {
+        this.conversation = conversation;
+
+        if (conversation.type === "loose") {
+          this.conversation.friendlyType = "Loose";
+
+          // TODO: This somehow needs to be changed to activate all peers and show all of them
+          if (this.peers.length <= 1) {
+            this.activatePeer(this.peers[0]);
+          }
+        } else if (conversation.type === "byturn") {
+          this.conversation.friendlyType = "By Turn";
+        }
+      });
+
+      Room.on("time.left", (secondsLeft) => {
+        this.countdown.secondsLeft = secondsLeft;
+        this.countdown.updateId = uuidv4();
+      });
+
+      Room.on("active.peer", (peerId) => {
+        if (this.activePeerExists()) {
+          this.activePeer.active == false;
+          this.activePeer.stream.getTracks().forEach((track) => {
+            track.enabled = false;
+          });
+
+          let peerToDeactivate = this.getPeerFromId(this.activePeer.id);
+          peerToDeactivate.active = false;
+          peerToDeactivate.stream.getTracks().forEach((track) => {
+            track.enabled = false;
+          });
+        }
+
+        this.activatePeer(this.getPeerFromId(peerId));
+      });
+    },
   },
 };
 </script>
@@ -301,6 +338,31 @@ export default {
 .home {
   height: 100vh;
   background: #9e0000;
+}
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: black;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.centering-wrapper {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.note {
+  color: #fff;
+}
+#username-form {
+  justify-content: center;
 }
 #mainArea {
   height: 100vh;
