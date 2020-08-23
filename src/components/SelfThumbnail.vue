@@ -14,6 +14,10 @@ export default {
   props: {
     votingEnabled: Boolean,
     selfActive: Boolean,
+    selfUsername: {
+      type: String,
+      default: "",
+    },
     selfVotes: {
       type: Number,
       default: 0,

@@ -16,6 +16,10 @@ export default {
       type: Number,
       default: 0,
     },
+    peerUsername: {
+      type: String,
+      default: "",
+    },
     peerActive: Boolean,
     peerVotes: {
       type: Number,

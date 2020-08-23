@@ -64,6 +64,7 @@
                 <PeerThumbnail
                   :voting-enabled="conversationIsSet()"
                   :peer-id="peer.id"
+                  :peer-username="peer.username"
                   :peer-active="peer.active"
                   :peer-votes="votes[peer.id]"
                   @votes-increment="incrementVotes($event)"
@@ -74,6 +75,7 @@
           <div class="col-2 d-flex justify-content-center">
             <SelfThumbnail
               :voting-enabled="conversationIsSet()"
+              :self-username="self.username"
               :self-active="self.active"
               :self-votes="votes[self.id]"
             ></SelfThumbnail>
@@ -94,7 +96,11 @@
           <div class="note mb-2">
             Please set a username before entering the chat
           </div>
-          <form id="username-form" class="form-inline">
+          <form
+            id="username-form"
+            class="form-inline"
+            @submit.prevent="saveUsername()"
+          >
             <div class="form-group">
               <input
                 id="username-input"
