@@ -170,7 +170,6 @@ export default {
   mounted() {
     let localVideoElement = document.getElementById("localVideo");
     InteractiveVideo.setup(localVideoElement);
-    // TODO:
   },
   methods: {
     isNumeric(value) {
@@ -213,6 +212,7 @@ export default {
     },
     saveUsername() {
       this.usernameSaved = true;
+      Room.setSelfUsername(this.self.username);
       this.setupSocketCommunication();
     },
     setupSocketCommunication() {
@@ -250,32 +250,26 @@ export default {
         }
       );
 
-      Room.on("peer.track", (peer) => {
-        let isNewPeer = true;
+      Room.on("sdp.answer", (peer) => {
+        let peerMediaStream = new MediaStream();
 
+        this.peers.push({
+          id: peer.id,
+          username: peer.username,
+          stream: peerMediaStream,
+          active: false,
+        });
+      });
+
+      Room.on("peer.track", (peer) => {
         this.peers.forEach((existingPeer) => {
           // Peer already exists so we just add the track to their MediaStream object
           if (existingPeer.id === peer.id) {
-            isNewPeer = false;
             console.log("Adding new track for client");
-            peer.track.enabled = false; // We need the stream to be disable by default
+            peer.track.enabled = false; // We need the stream to be disabled by default
             existingPeer.stream.addTrack(peer.track);
           }
         });
-
-        // Peer is new so we create their MediaStream, add the first track and update the peers list
-        if (isNewPeer) {
-          console.log("Adding new client and first track");
-          let peerMediaStream = new MediaStream();
-          peerMediaStream.addTrack(peer.track);
-
-          console.log("Incoming Peer: ", peer);
-          this.peers.push({
-            id: peer.id,
-            stream: peerMediaStream,
-            active: false,
-          });
-        }
       });
 
       Room.on("peer.disconnected", (peer) => {

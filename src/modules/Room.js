@@ -5,6 +5,7 @@ import EventEmitter from "wolfy87-eventemitter";
 
 var peerConnections = {};
 var currentId;
+var selfUsername;
 var localStream;
 var connected = false;
 
@@ -27,6 +28,7 @@ function createNewPeerConnection(id) {
   peerConnection.onicecandidate = function (event) {
     socket.emit("msg", {
       by: currentId,
+      username: selfUsername,
       to: id,
       ice: event.candidate,
       type: "ice",
@@ -37,6 +39,7 @@ function createNewPeerConnection(id) {
     api.trigger("peer.track", [
       {
         id: id,
+        username: selfUsername, // TODO: here we should have the peers username
         track: rtcTrackEvent.track,
       },
     ]);
@@ -62,6 +65,7 @@ function makeOffer(id) {
 
       socket.emit("msg", {
         by: currentId,
+        username: selfUsername,
         to: id,
         sdp: sdp,
         type: "sdp-offer",
@@ -96,6 +100,7 @@ function handleSocketMessage(data) {
 
               socket.emit("msg", {
                 by: currentId,
+                username: selfUsername,
                 to: data.by,
                 sdp: sdp,
                 type: "sdp-answer",
@@ -117,6 +122,13 @@ function handleSocketMessage(data) {
         .setRemoteDescription(rtcSessionDescription)
         .then(() => {
           console.log("Setting remote description by answer");
+
+          api.trigger("sdp.answer", [
+            {
+              id: data.by,
+              username: data.username,
+            },
+          ]);
         })
         .catch((e) => {
           console.error(e);
@@ -137,6 +149,7 @@ function handleSocketMessage(data) {
 var socket = Io.connect(Config.SignalingServerUrl);
 
 socket.on("peer.connected", function (peer) {
+  console.log("peer.connected: ", peer);
   makeOffer(peer.id);
 });
 
@@ -212,6 +225,9 @@ var api = {
   },
   getSelfId: function () {
     return currentId;
+  },
+  setSelfUsername: function (username) {
+    selfUsername = username;
   },
 };
 
