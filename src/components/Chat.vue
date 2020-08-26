@@ -44,11 +44,6 @@
       </div>
       <div class="card-footer">
         <div class="input-group">
-          <div class="input-group-append">
-            <span class="input-group-text attach_btn">
-              <font-awesome-icon icon="paperclip" />
-            </span>
-          </div>
           <textarea
             v-model="message"
             class="form-control type_msg"
