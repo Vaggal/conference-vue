@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ active: selfActive }">
+  <div class="thumbnail" :class="{ active: selfActive }">
     <div>
       <font-awesome-icon icon="user-alt" class="fa-3x" />
       <span
@@ -8,7 +8,7 @@
         >{{ votes }}</span
       >
     </div>
-    <div>test</div>
+    <div>{{ selfUsername }}</div>
   </div>
 </template>
 
@@ -49,5 +49,11 @@ export default {
 }
 .active {
   color: #fff;
+}
+.thumbnail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: frgb(160, 160, 160);
 }
 </style>

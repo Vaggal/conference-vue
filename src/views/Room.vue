@@ -366,6 +366,7 @@ export default {
 }
 #mainArea {
   height: 100vh;
+  padding-bottom: 4px;
 }
 #video-wrapper {
   position: relative;

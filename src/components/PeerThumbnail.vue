@@ -1,9 +1,16 @@
 <template>
-  <div :class="{ active: peerActive }" @click="incrementVotes">
-    <font-awesome-icon icon="user" class="fa-3x" />
-    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">
-      {{ votes }}
-    </span>
+  <div
+    class="thumbnail"
+    :class="{ active: peerActive }"
+    @click="incrementVotes"
+  >
+    <div>
+      <font-awesome-icon icon="user" class="fa-3x" />
+      <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">
+        {{ votes }}
+      </span>
+    </div>
+    <div>{{ peerUsername }}</div>
   </div>
 </template>
 
@@ -54,5 +61,11 @@ export default {
 }
 .active {
   color: #fff;
+}
+.thumbnail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: frgb(160, 160, 160);
 }
 </style>
