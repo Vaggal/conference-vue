@@ -114,6 +114,13 @@ function handleSocketMessage(data) {
           console.log(e);
         });
 
+      api.trigger("add.peer", [
+        {
+          id: data.by,
+          username: data.username,
+        },
+      ]);
+
       break;
     case "sdp-answer":
       rtcSessionDescription = new RTCSessionDescription(data.sdp);
@@ -123,7 +130,7 @@ function handleSocketMessage(data) {
         .then(() => {
           console.log("Setting remote description by answer");
 
-          api.trigger("sdp.answer", [
+          api.trigger("add.peer", [
             {
               id: data.by,
               username: data.username,

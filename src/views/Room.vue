@@ -256,7 +256,7 @@ export default {
         }
       );
 
-      Room.on("sdp.answer", (peer) => {
+      Room.on("add.peer", (peer) => {
         let peerMediaStream = new MediaStream();
 
         this.peers.push({
