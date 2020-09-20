@@ -39,7 +39,6 @@ function createNewPeerConnection(id) {
     api.trigger("peer.track", [
       {
         id: id,
-        username: selfUsername, // TODO: here we should have the peers username
         track: rtcTrackEvent.track,
       },
     ]);
@@ -252,10 +251,11 @@ api.on("conversation.type.selected", function (type) {
     type: type,
   });
 });
-api.on("new-comment", function (message, id) {
+api.on("new-comment", function (message, id, username) {
   socket.emit("new-comment", {
     message: message,
     id: id,
+    username: username,
   });
 });
 

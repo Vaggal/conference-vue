@@ -214,7 +214,7 @@ export default {
       });
     },
     sendComment(message) {
-      Room.trigger("new-comment", [message, this.self.id]);
+      Room.trigger("new-comment", [message, this.self.id, this.self.username]);
     },
     saveUsername() {
       this.usernameSaved = true;

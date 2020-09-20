@@ -1,13 +1,19 @@
 <template>
   <div :class="{ active: selfActive }">
-    <font-awesome-icon icon="user-alt" class="fa-3x" />
-    <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">{{
-      votes
-    }}</span>
+    <div>
+      <font-awesome-icon icon="user-alt" class="fa-3x" />
+      <span
+        v-if="votingEnabled"
+        class="user-badge badge badge-pill badge-info"
+        >{{ votes }}</span
+      >
+    </div>
+    <div>test</div>
   </div>
 </template>
 
 <script>
+// TODO: we need flexbox implementation for self and peer thumbnails
 // TODO: Why do we need selfVotes property AND votes variable???
 export default {
   name: "SelfThumbnail",

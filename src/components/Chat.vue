@@ -26,7 +26,7 @@
           ]"
         >
           <div class="img_cont_msg">
-            <span>T</span>
+            <span>{{ comment.username.charAt(0) }}</span>
           </div>
           <div
             :class="[
