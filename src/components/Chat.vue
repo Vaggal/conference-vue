@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import autosize from "autosize";
+
 export default {
   name: "Chat",
   props: {
@@ -80,6 +82,18 @@ export default {
   },
   watch: {},
   updated() {},
+  mounted() {
+    let textarea = document.querySelector("textarea");
+    autosize(textarea);
+    textarea.addEventListener("keydown", (e) => {
+      if (!e.ctrlKey && e.keyCode === 13) {
+        e.preventDefault();
+        this.sendComment();
+      } else if (e.ctrlKey && e.keyCode === 13) {
+        this.message += "\n";
+      }
+    });
+  },
   methods: {
     sendComment() {
       this.$emit("new-comment", this.message);
@@ -129,7 +143,6 @@ html {
   background-color: rgba(0, 0, 0, 0.3) !important;
   border: 0 !important;
   color: white !important;
-  height: 60px !important;
   overflow-y: auto;
 }
 .type_msg:focus {
@@ -214,25 +227,23 @@ html {
   cursor: pointer;
   margin-right: 20px;
 }
-.msg_cotainer {
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 10px;
-  // border-radius: 25px;
-  border-radius: 3.5px;
-  background-color: #82ccdd;
-  padding: 10px;
-  position: relative;
-}
+.msg_cotainer,
 .msg_cotainer_send {
   margin-top: auto;
   margin-bottom: auto;
-  margin-right: 10px;
   // border-radius: 25px;
   border-radius: 3.5px;
-  background-color: #78e08f;
   padding: 10px;
   position: relative;
+  white-space: pre-wrap;
+}
+.msg_cotainer {
+  margin-left: 10px;
+  background-color: #82ccdd;
+}
+.msg_cotainer_send {
+  margin-right: 10px;
+  background-color: #78e08f;
 }
 .msg_time {
   position: absolute;
