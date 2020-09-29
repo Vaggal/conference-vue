@@ -174,6 +174,7 @@ export default {
   },
   beforeMount() {},
   mounted() {
+    document.getElementById("username-input").focus();
     let localVideoElement = document.getElementById("localVideo");
     InteractiveVideo.setup(localVideoElement);
   },
