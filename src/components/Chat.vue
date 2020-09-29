@@ -21,11 +21,11 @@
           class="d-flex mb-4"
           :class="[
             comment.userId == selfId
-              ? 'justify-content-end'
-              : 'justify-content-start',
+              ? 'justify-content-start flex-row-reverse'
+              : 'justify-content-start flex-row',
           ]"
         >
-          <div class="img_cont_msg">
+          <div class="img_cont_msg flex-shrink-0">
             <span>{{ comment.username.charAt(0) }}</span>
           </div>
           <div
@@ -33,8 +33,19 @@
               comment.userId == selfId ? 'msg_cotainer_send' : 'msg_cotainer',
             ]"
           >
-            <!-- TODO: insert username in different colour -->
-            {{ comment.message }}
+            <div class="msg_username_container">
+              <span
+                :class="[
+                  comment.userId == selfId
+                    ? 'msg_username_send'
+                    : 'msg_username',
+                ]"
+                >{{ comment.username }}</span
+              >
+            </div>
+            <div class="msg">
+              {{ comment.message }}
+            </div>
             <span
               :class="[comment.userId == selfId ? 'msg_time_send' : 'msg_time']"
               >{{ comment.fromNow }}</span
@@ -113,15 +124,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-body,
-html {
-  height: 100%;
-  margin: 0;
-  background: #7f7fd5;
-  background: -webkit-linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5);
-  background: linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5);
-}
-
 .chat {
   margin-top: auto;
   margin-bottom: auto;
@@ -157,13 +159,6 @@ html {
 .type_msg:focus {
   box-shadow: none !important;
   outline: 0px !important;
-}
-.attach_btn {
-  // border-radius: 15px 0 0 15px !important;
-  background-color: rgba(0, 0, 0, 0.3) !important;
-  border: 0 !important;
-  color: white !important;
-  cursor: pointer;
 }
 .send_btn {
   // border-radius: 0 15px 15px 0 !important;
@@ -211,7 +206,7 @@ html {
   font-weight: bold;
   font-size: 1.2em;
   background-color: gray;
-  margin-right: 2px;
+  // margin-right: 2px;
 }
 .user_info {
   margin-top: auto;
@@ -238,11 +233,11 @@ html {
 }
 .msg_cotainer,
 .msg_cotainer_send {
+  word-break: break-all;
   margin-top: auto;
   margin-bottom: auto;
   // border-radius: 25px;
   border-radius: 3.5px;
-  padding: 10px;
   position: relative;
   white-space: pre-wrap;
 }
@@ -254,19 +249,27 @@ html {
   margin-right: 10px;
   background-color: #78e08f;
 }
-.msg_time {
+.msg_username_container {
+  position: relative;
+}
+.msg_username,
+.msg_username_send {
   position: absolute;
-  left: 0;
-  bottom: -15px;
-  color: rgba(255, 255, 255, 0.5);
+  left: 14px;
+  color: rgba(14, 14, 14, 0.5);
   font-size: 10px;
 }
-.msg_time_send {
+.msg_time_send,
+.msg_time {
   position: absolute;
   right: 0;
   bottom: -15px;
   color: rgba(255, 255, 255, 0.5);
   font-size: 10px;
+}
+.msg {
+  padding: 10px;
+  min-width: 65px;
 }
 .msg_head {
   position: relative;
