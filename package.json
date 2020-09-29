@@ -17,6 +17,7 @@
     "bootstrap": "^4.5.2",
     "core-js": "^3.6.5",
     "easytimer.js": "^4.3.0",
+    "fromnow": "^3.0.1",
     "interactjs": "^1.9.22",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1",

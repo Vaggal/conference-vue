@@ -37,7 +37,7 @@
             {{ comment.message }}
             <span
               :class="[comment.userId == selfId ? 'msg_time_send' : 'msg_time']"
-              >{{ comment.date }}</span
+              >{{ comment.fromNow }}</span
             >
           </div>
         </div>
@@ -62,6 +62,7 @@
 
 <script>
 import autosize from "autosize";
+import fromnow from "fromnow";
 
 export default {
   name: "Chat",
@@ -93,10 +94,18 @@ export default {
         this.message += "\n";
       }
     });
+    setInterval(() => {
+      this.comments.forEach((comment) => {
+        let agoString = fromnow(comment.date) === "just now" ? "" : " ago";
+        comment.fromNow = fromnow(comment.date) + agoString;
+      });
+    }, 1000);
   },
   methods: {
     sendComment() {
-      this.$emit("new-comment", this.message);
+      if (this.message.trim().length > 0) {
+        this.$emit("new-comment", this.message);
+      }
       this.message = "";
     },
   },

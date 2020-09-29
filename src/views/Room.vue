@@ -286,6 +286,7 @@ export default {
       });
 
       Room.on("comment", (comment) => {
+        comment.fromNow = "just now";
         this.comments.push(comment);
       });
 
