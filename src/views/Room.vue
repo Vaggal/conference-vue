@@ -229,33 +229,41 @@ export default {
         return;
       }
 
-      LocalVideoStream.get().then(
-        (stream) => {
+      LocalVideoStream.get()
+        .then((stream) => {
           this.self.stream = stream;
           Room.init(this.self.stream);
 
           if (!this.$route.params.roomId) {
-            Room.createRoom().then((roomId) => {
-              this.self.id = Room.getSelfId();
-              this.$router.push({
-                name: "active-room",
-                params: { roomId: roomId },
+            Room.createRoom()
+              .then((roomId) => {
+                this.self.id = Room.getSelfId();
+                this.$router.push({
+                  name: "active-room",
+                  params: { roomId: roomId },
+                });
+              })
+              .catch((error) => {
+                console.log("Error creating room: ", error);
               });
-            });
           } else {
-            Room.joinRoom(this.$route.params.roomId).then(() => {
-              this.self.id = Room.getSelfId();
-            });
+            Room.joinRoom(this.$route.params.roomId)
+              .then(() => {
+                this.self.id = Room.getSelfId();
+              })
+              .catch((error) => {
+                console.log("Error joining room: ", error);
+              });
           }
 
           let localVideo = document.getElementById("localVideo");
           localVideo.srcObject = this.self.stream;
-        },
-        () => {
+        })
+        .catch((error) => {
+          console.log("Error getting local video stream: ", error);
           this.error =
             "No audio/video permissions. Please refresh your browser and allow the audio/video capturing.";
-        }
-      );
+        });
 
       Room.on("add.peer", (peer) => {
         let peerMediaStream = new MediaStream();

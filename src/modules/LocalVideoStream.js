@@ -14,6 +14,9 @@ let get = function () {
       navigator.mediaDevices
         .getUserMedia(mediaConstraints)
         .then((mediaStream) => {
+          mediaStream.onremovetrack = (event) => {
+            console.log("Removed track: ", event);
+          };
           stream = mediaStream;
           resolve(stream);
         })

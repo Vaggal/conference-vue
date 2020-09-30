@@ -70,8 +70,8 @@ function makeOffer(id) {
         type: "sdp-offer",
       });
     })
-    .catch((e) => {
-      console.log(e);
+    .catch((error) => {
+      console.log("Error making offer: ", error);
     });
 }
 
@@ -105,12 +105,12 @@ function handleSocketMessage(data) {
                 type: "sdp-answer",
               });
             })
-            .catch((e) => {
-              console.log(e);
+            .catch((error) => {
+              console.log("Error creating answer: ", error);
             });
         })
-        .catch((e) => {
-          console.log(e);
+        .catch((error) => {
+          console.log("Error setting remote description: ", error);
         });
 
       api.trigger("add.peer", [
@@ -136,8 +136,8 @@ function handleSocketMessage(data) {
             },
           ]);
         })
-        .catch((e) => {
-          console.error(e);
+        .catch((error) => {
+          console.log("Error setting remote description: ", error);
         });
 
       break;
