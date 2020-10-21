@@ -346,7 +346,7 @@ export default {
 
 <style lang="scss">
 .home {
-  height: 100vh;
+  height: 100%;
   background: #9e0000;
 }
 .overlay {

@@ -1,6 +1,6 @@
 <template>
   <div class="chat">
-    <div class="card">
+    <div class="card chat-card">
       <div class="card-header msg_head">
         <div class="d-flex bd-highlight">
           <div class="user_info">
@@ -125,10 +125,12 @@ export default {
 
 <style scoped lang="scss">
 .chat {
+  height: 100vh;
   margin-top: auto;
   margin-bottom: auto;
 }
-.card {
+.chat-card {
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.4) !important;
 }
 .contacts_body {
@@ -137,6 +139,7 @@ export default {
   white-space: nowrap;
 }
 .msg_card_body {
+  height: 100%;
   overflow-y: auto;
 }
 .card-header {
