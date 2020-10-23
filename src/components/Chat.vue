@@ -2,17 +2,7 @@
   <div class="chat">
     <div class="card chat-card">
       <div class="card-header msg_head">
-        <div class="d-flex bd-highlight">
-          <div class="user_info">
-            <span>Chat with peers</span>
-          </div>
-        </div>
-        <span id="action_menu_btn">
-          <font-awesome-icon icon="ellipsis-v" />
-        </span>
-        <div class="action_menu">
-          <ul></ul>
-        </div>
+        <span>Chat with peers</span>
       </div>
       <div class="card-body msg_card_body">
         <div
@@ -143,8 +133,12 @@ export default {
   overflow-y: auto;
 }
 .card-header {
+  font-size: 20px;
+  color: white;
   // border-radius: 15px 15 px 0 0 !important;
+  text-align: center;
   border-bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 .card-footer {
   // border-radius: 0 0 15px 15px !important;
@@ -210,19 +204,6 @@ export default {
   font-size: 1.2em;
   background-color: gray;
   // margin-right: 2px;
-}
-.user_info {
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 15px;
-}
-.user_info span {
-  font-size: 20px;
-  color: white;
-}
-.user_info p {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.6);
 }
 .video_cam {
   margin-left: 50px;
