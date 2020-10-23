@@ -5,7 +5,7 @@
     @click="incrementVotes"
   >
     <div>
-      <font-awesome-icon icon="user" class="fa-3x" />
+      <font-awesome-icon icon="user" class="peer-icon" />
       <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">
         {{ votes }}
       </span>
@@ -67,5 +67,8 @@ export default {
   flex-direction: column;
   align-items: center;
   color: frgb(160, 160, 160);
+}
+.peer-icon {
+  font-size: 2.5em;
 }
 </style>

@@ -57,7 +57,7 @@
           -->
         </div>
 
-        <div class="row mt-2">
+        <div class="row mt-1">
           <div class="col-8 offset-2">
             <div class="row justify-content-center">
               <div v-for="(peer, key) in peers" :key="key" class="col-auto">

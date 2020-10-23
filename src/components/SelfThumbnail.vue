@@ -1,7 +1,7 @@
 <template>
   <div class="thumbnail" :class="{ active: selfActive }">
     <div>
-      <font-awesome-icon icon="user-alt" class="fa-3x" />
+      <font-awesome-icon icon="user-alt" class="self-icon" />
       <span
         v-if="votingEnabled"
         class="user-badge badge badge-pill badge-info"
@@ -13,7 +13,6 @@
 </template>
 
 <script>
-// TODO: we need flexbox implementation for self and peer thumbnails
 // TODO: Why do we need selfVotes property AND votes variable???
 export default {
   name: "SelfThumbnail",
@@ -55,5 +54,8 @@ export default {
   flex-direction: column;
   align-items: center;
   color: frgb(160, 160, 160);
+}
+.self-icon {
+  font-size: 2.5em;
 }
 </style>
