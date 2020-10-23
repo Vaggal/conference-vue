@@ -1,5 +1,5 @@
 let config = {
-  SignalingServerUrl: "communicate.local:5555",
+  SignalingServerUrl: window.location.host, // For dev environment communicate.local:5555
   RTCConfiguration: {
     iceServers: [
       {
