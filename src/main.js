@@ -17,7 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add([faUser, faUserAlt, faEllipsisV, faLocationArrow, faPaperclip]);
-Vue.component("font-awesome-icon", FontAwesomeIcon);
+Vue.component("FontAwesomeIcon", FontAwesomeIcon);
 
 Vue.config.productionTip = false;
 
