@@ -220,6 +220,22 @@ export default {
         this.self.active = true;
       }
     },
+    deactivatePeer() {
+      this.activePeer.active == false;
+      this.activePeer.stream.getTracks().forEach((track) => {
+        track.enabled = false;
+      });
+
+      let peerToDeactivate = this.getPeerFromId(this.activePeer.id);
+      peerToDeactivate.active = false;
+
+      // If the active peer is the client then we should not disable the tracks because the self video will stop
+      if (peerToDeactivate.id != this.self.id) {
+        peerToDeactivate.stream.getTracks().forEach((track) => {
+          track.enabled = false;
+        });
+      }
+    },
     sendComment(message) {
       Room.trigger("new-comment", [message, this.self.id, this.self.username]);
     },
@@ -330,24 +346,14 @@ export default {
       });
 
       Room.on("active.peer", (peerId) => {
-        if (this.activePeerExists()) {
-          this.activePeer.active == false;
-          this.activePeer.stream.getTracks().forEach((track) => {
-            track.enabled = false;
-          });
-
-          let peerToDeactivate = this.getPeerFromId(this.activePeer.id);
-          peerToDeactivate.active = false;
-          // If the active peer is the client then we should not disable the tracks because the self video will stop
-          if (peerToDeactivate.id != this.self.id) {
-            peerToDeactivate.stream.getTracks().forEach((track) => {
-              track.enabled = false;
-            });
+        if (peerId != this.activePeer.id) {
+          if (this.activePeerExists()) {
+            this.deactivatePeer();
           }
-        }
-        let peerToActivate = this.getPeerFromId(peerId);
 
-        this.activatePeer(peerToActivate);
+          let peerToActivate = this.getPeerFromId(peerId);
+          this.activatePeer(peerToActivate);
+        }
       });
     },
   },
