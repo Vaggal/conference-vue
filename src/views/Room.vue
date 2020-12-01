@@ -215,6 +215,10 @@ export default {
         track.enabled = true;
       });
       this.activePeer.active = true;
+      peerToActivate.active = true;
+      if (peerToActivate.id == this.self.id) {
+        this.self.active = true;
+      }
     },
     sendComment(message) {
       Room.trigger("new-comment", [message, this.self.id, this.self.username]);
