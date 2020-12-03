@@ -36,27 +36,37 @@
           <div id="localVideoContainer">
             <video id="localVideo" autoplay muted></video>
           </div>
-          <div v-if="conversationIsSet() && !conversationIsLoose()">
-            <div class="col-xs col-sm d-flex justify-content-center">
-              <VideoPlayer
-                v-if="activePeerExists"
-                :peer-index="activePeer.id"
-                :peer-stream="activePeer.stream"
-              ></VideoPlayer>
+          <div
+            v-if="conversationIsSet() && !conversationIsLoose()"
+            class="col d-flex"
+          >
+            <div class="row flex-grow-1">
+              <div class="col-xs col-sm d-flex justify-content-center">
+                <VideoPlayer
+                  v-if="activePeerExists"
+                  :peer-index="activePeer.id"
+                  :peer-stream="activePeer.stream"
+                ></VideoPlayer>
+              </div>
             </div>
           </div>
           <!-- this will be used when we will want to display more than one peers at the same time -->
-          <div v-if="conversationIsSet() && conversationIsLoose()">
-            <div
-              v-for="(peer, key) in peers"
-              :key="key"
-              class="col-sm d-flex justify-content-center"
-            >
-              <VideoPlayer
-                :peer-index="key"
-                :peer-stream="peer.stream"
-                :conversation-type="conversation.type"
-              ></VideoPlayer>
+          <div
+            v-if="conversationIsSet() && conversationIsLoose()"
+            class="col d-flex"
+          >
+            <div class="row flex-grow-1">
+              <div
+                v-for="(peer, key) in peers"
+                :key="key"
+                class="col-sm d-flex justify-content-center"
+              >
+                <VideoPlayer
+                  :peer-index="key"
+                  :peer-stream="peer.stream"
+                  :conversation-type="conversation.type"
+                ></VideoPlayer>
+              </div>
             </div>
           </div>
         </div>
