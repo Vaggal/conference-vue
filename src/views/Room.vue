@@ -66,7 +66,9 @@
             <div class="row justify-content-center">
               <div v-for="(peer, key) in peers" :key="key" class="col-auto">
                 <PeerThumbnail
-                  :voting-enabled="conversationIsSet()"
+                  :voting-enabled="
+                    conversationIsSet() && !conversationIsLoose()
+                  "
                   :peer-id="peer.id"
                   :peer-username="peer.username"
                   :peer-active="peer.active"
@@ -78,7 +80,7 @@
           </div>
           <div class="col-2 d-flex justify-content-center">
             <SelfThumbnail
-              :voting-enabled="conversationIsSet()"
+              :voting-enabled="conversationIsSet() && !conversationIsLoose()"
               :self-username="self.username"
               :self-active="self.active"
               :self-votes="votes[self.id]"
