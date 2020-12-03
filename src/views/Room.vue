@@ -36,25 +36,29 @@
           <div id="localVideoContainer">
             <video id="localVideo" autoplay muted></video>
           </div>
-          <div class="col-xs col-sm d-flex justify-content-center">
-            <VideoPlayer
-              v-if="activePeerExists"
-              :peer-index="activePeer.id"
-              :peer-stream="activePeer.stream"
-            ></VideoPlayer>
+          <div v-if="conversationIsSet() && !conversationIsLoose()">
+            <div class="col-xs col-sm d-flex justify-content-center">
+              <VideoPlayer
+                v-if="activePeerExists"
+                :peer-index="activePeer.id"
+                :peer-stream="activePeer.stream"
+              ></VideoPlayer>
+            </div>
           </div>
-          <!-- this will be used when we will want to display more than one peers at the same time
-          <div
-            v-for="(peer, key) in peers"
-            :key="key"
-            class="col-sm d-flex justify-content-center"
-          >
-            <VideoPlayer
-              :peer-index="key"
-              :peer-stream="peer.stream"
-            ></VideoPlayer>
+          <!-- this will be used when we will want to display more than one peers at the same time -->
+          <div v-if="conversationIsSet() && conversationIsLoose()">
+            <div
+              v-for="(peer, key) in peers"
+              :key="key"
+              class="col-sm d-flex justify-content-center"
+            >
+              <VideoPlayer
+                :peer-index="key"
+                :peer-stream="peer.stream"
+                :conversation-type="conversation.type"
+              ></VideoPlayer>
+            </div>
           </div>
-          -->
         </div>
 
         <div class="row mt-1">
@@ -191,6 +195,9 @@ export default {
     conversationIsSet() {
       return this.conversation.type !== "";
     },
+    conversationIsLoose() {
+      return this.conversation.type === "loose";
+    },
     getPeerFromId(peerId) {
       if (this.self.id == peerId) {
         return this.self;
@@ -326,16 +333,17 @@ export default {
       });
 
       Room.on("conversation.type.set", (conversation) => {
-        this.conversation = conversation;
-
         if (conversation.type === "loose") {
+          this.peers.forEach((peer) => {
+            peer.active = true;
+            peer.stream.getTracks().forEach((track) => {
+              track.enabled = true;
+            });
+          });
+          this.conversation = conversation;
           this.conversation.friendlyType = "Loose";
-
-          // TODO: This somehow needs to be changed to activate all peers and show all of them
-          if (this.peers.length <= 1) {
-            this.activatePeer(this.peers[0]);
-          }
         } else if (conversation.type === "byturn") {
+          this.conversation = conversation;
           this.conversation.friendlyType = "By Turn";
         }
       });

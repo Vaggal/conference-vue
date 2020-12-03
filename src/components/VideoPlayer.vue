@@ -26,6 +26,9 @@ export default {
   updated() {
     this.setVideoStream();
   },
+  mounted() {
+    this.setVideoStream();
+  },
   methods: {
     setVideoStream() {
       let peerVideoElement = document.getElementById(this.peerIndexId);
