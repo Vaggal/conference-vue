@@ -35,17 +35,22 @@ export default {
   },
   data() {
     return {
+      voted: false,
       votes: this.peerVotes,
     };
   },
   watch: {
     peerVotes: function () {
+      if (this.peerVotes == 0) {
+        this.votes = false;
+      }
       this.votes = this.peerVotes;
     },
   },
   methods: {
     incrementVotes() {
-      if (this.votingEnabled) {
+      if (this.votingEnabled && !this.voted) {
+        this.voted = true;
         this.votes++;
         this.$emit("votes-increment", this.peerId);
       }
