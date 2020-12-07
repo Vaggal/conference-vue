@@ -223,7 +223,10 @@ export default {
     },
     conversationTypeSelected(event) {
       if (event.target.value === "byturn" || event.target.value === "loose") {
-        Room.trigger("conversation.type.selected", [event.target.value]);
+        Room.trigger("conversation.type.selected", [
+          this.self.id,
+          event.target.value,
+        ]);
       }
     },
     activatePeer(peerToActivate) {

@@ -246,9 +246,12 @@ api.on("votes.increment", function (peerId) {
   });
 });
 
-api.on("conversation.type.selected", function (type) {
+api.on("conversation.type.selected", function (id, type) {
   socket.emit("conversation.type.selected", {
-    type: type,
+    by: id,
+    conversation: {
+      type: type,
+    },
   });
 });
 api.on("new-comment", function (message, id, username) {
