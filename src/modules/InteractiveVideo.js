@@ -16,24 +16,24 @@ function onDragMove(event) {
   target.setAttribute("data-y", y);
 }
 
-function onResizeMove(event) {
-  var target = event.target;
-  var x = parseFloat(target.getAttribute("data-x")) || 0;
-  var y = parseFloat(target.getAttribute("data-y")) || 0;
+// function onResizeMove(event) {
+//   var target = event.target;
+//   var x = parseFloat(target.getAttribute("data-x")) || 0;
+//   var y = parseFloat(target.getAttribute("data-y")) || 0;
 
-  // update the element's style
-  target.style.width = event.rect.width + "px";
-  target.style.height = event.rect.height + "px";
+//   // update the element's style
+//   target.style.width = event.rect.width + "px";
+//   target.style.height = event.rect.height + "px";
 
-  // translate when resizing from top or left edges
-  x += event.deltaRect.left;
-  y += event.deltaRect.top;
-  target.style.webkitTransform = target.style.transform =
-    "translate(" + x + "px," + y + "px)";
+//   // translate when resizing from top or left edges
+//   x += event.deltaRect.left;
+//   y += event.deltaRect.top;
+//   target.style.webkitTransform = target.style.transform =
+//     "translate(" + x + "px," + y + "px)";
 
-  target.setAttribute("data-x", x);
-  target.setAttribute("data-y", y);
-}
+//   target.setAttribute("data-x", x);
+//   target.setAttribute("data-y", y);
+// }
 
 let setup = function (videoLocalElement) {
   interact(videoLocalElement)
@@ -51,28 +51,28 @@ let setup = function (videoLocalElement) {
       },
       onmove: window.dragMoveListener,
     })
-    .resizable({
-      preserveAspectRatio: true,
-      inertia: true,
-      edges: {
-        left: true,
-        right: true,
-        bottom: true,
-        top: true,
-      },
-      restrictEdges: {
-        outer: "parent",
-        endOnly: true,
-      },
-      restrictSize: {
-        min: {
-          width: 50,
-          height: 50,
-        },
-      },
-    })
-    .on("dragmove", onDragMove)
-    .on("resizemove", onResizeMove);
+    // .resizable({
+    //   preserveAspectRatio: true,
+    //   inertia: true,
+    //   edges: {
+    //     left: true,
+    //     right: true,
+    //     bottom: true,
+    //     top: true,
+    //   },
+    //   restrictEdges: {
+    //     outer: "parent",
+    //     endOnly: true,
+    //   },
+    //   restrictSize: {
+    //     min: {
+    //       width: 50,
+    //       height: 50,
+    //     },
+    //   },
+    // })
+    .on("dragmove", onDragMove);
+  // .on("resizemove", onResizeMove);
 };
 
 export default {

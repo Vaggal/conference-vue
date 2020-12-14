@@ -431,7 +431,7 @@ export default {
 #localVideo {
   width: 160px;
   height: 120px;
-  box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.75);
   touch-action: none;
 }
 #errorAlert {
