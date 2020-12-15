@@ -163,7 +163,7 @@ export default {
   // border-radius: 0 15px 15px 0 !important;
   background-color: $background-tint-3 !important;
   border: 0 !important;
-  color: $petrol-1;
+  color: $yellow;
   cursor: pointer;
 }
 .contacts {
@@ -204,7 +204,7 @@ export default {
   justify-content: center;
   font-weight: bold;
   font-size: 1.2em;
-  background-color: gray;
+  background-color: $petrol-3;
   // margin-right: 2px;
 }
 .video_cam {
@@ -229,11 +229,11 @@ export default {
 }
 .msg_cotainer {
   margin-left: 10px;
-  background-color: #82ccdd;
+  background-color: $petrol-4;
 }
 .msg_cotainer_send {
   margin-right: 10px;
-  background-color: #78e08f;
+  background-color: $yellow;
 }
 .msg_username_container {
   position: relative;
@@ -249,9 +249,9 @@ export default {
 .msg_time {
   position: absolute;
   right: 0;
-  bottom: -15px;
   color: rgba(255, 255, 255, 0.5);
   font-size: 10px;
+  white-space: nowrap;
 }
 .msg {
   padding: 10px;

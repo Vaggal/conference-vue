@@ -55,6 +55,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import "@/assets/variables.scss";
+
 .overlay {
   position: fixed;
   width: 100%;
@@ -78,6 +80,6 @@ export default {
   justify-content: center;
 }
 .note {
-  color: #fff;
+  color: $petrol-1;
 }
 </style>

@@ -14,6 +14,9 @@ body,
   height: 100%;
   overflow: hidden;
 }
+.badge-info {
+  background-color: $yellow;
+}
 .custom-select {
   background-color: $petrol-1 !important;
 }

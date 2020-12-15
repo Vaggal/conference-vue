@@ -49,7 +49,7 @@ export default {
   margin-left: -13px;
 }
 .active {
-  color: $petrol-1;
+  color: $petrol-1 !important;
 }
 .thumbnail {
   display: flex;

@@ -47,11 +47,11 @@ export default {
         },
         warning: {
           color: "orange",
-          threshold: 10,
+          threshold: Math.round(this.secondsLeft * 0.3),
         },
         alert: {
           color: "red",
-          threshold: 5,
+          threshold: Math.round(this.secondsLeft * 0.1),
         },
       },
       currentColor: "green",
@@ -62,6 +62,8 @@ export default {
     updateId: {
       immediate: true,
       handler: function () {
+        this.colorCodes.warning.threshold = Math.round(this.secondsLeft * 0.3);
+        this.colorCodes.alert.threshold = Math.round(this.secondsLeft * 0.1);
         this.startTimer();
       },
     },
@@ -118,6 +120,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "@/assets/variables.scss";
+
 .base-timer-circle {
   fill: none;
   stroke: none;
@@ -125,7 +129,7 @@ export default {
 
 .base-timer-path-elapsed {
   stroke-width: 5px;
-  stroke: grey;
+  stroke: $petrol-1;
 }
 
 .base-timer-path-remaining {
@@ -143,7 +147,7 @@ export default {
 }
 
 .base-timer-path-remaining.orange {
-  color: orange;
+  color: $yellow;
 }
 
 .base-timer-path-remaining.red {
@@ -151,7 +155,7 @@ export default {
 }
 
 .svg-text {
-  stroke: grey;
-  fill: grey;
+  stroke: $petrol-1;
+  fill: $petrol-1;
 }
 </style>
