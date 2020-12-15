@@ -80,3 +80,4 @@ export default {
 .note {
   color: #fff;
 }
+</style>
