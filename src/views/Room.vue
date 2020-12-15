@@ -106,38 +106,7 @@
         ></Chat>
       </div>
     </div>
-    <div class="overlay" :class="{ invisible: usernameSaved }">
-      <div class="centering-wrapper">
-        <div class="form-container">
-          <div class="note mb-2">
-            Please set a username before entering the chat
-          </div>
-          <form
-            id="username-form"
-            class="form-inline"
-            @submit.prevent="saveUsername()"
-          >
-            <div class="form-group">
-              <input
-                id="username-input"
-                v-model="self.username"
-                type="text"
-                class="form-control"
-                aria-describedby="username"
-                placeholder="Enter username"
-              />
-            </div>
-            <button
-              type="button"
-              class="btn btn-primary ml-1"
-              @click="saveUsername()"
-            >
-              Save
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+    <Overlay @save-username="saveUsername"> </Overlay>
   </div>
 </template>
 
@@ -155,6 +124,7 @@ import { v4 as uuidv4 } from "uuid";
 import Room from "@/modules/Room";
 import InteractiveVideo from "@/modules/InteractiveVideo";
 import LocalVideoStream from "@/modules/LocalVideoStream";
+import Overlay from "../components/Overlay.vue";
 
 export default {
   name: "Room",
@@ -164,10 +134,10 @@ export default {
     SelfThumbnail,
     Countdown,
     Chat,
+    Overlay,
   },
   data() {
     return {
-      usernameSaved: false,
       error: "",
       self: {
         username: "",
@@ -261,8 +231,8 @@ export default {
     sendComment(message) {
       Room.trigger("new-comment", [message, this.self.id, this.self.username]);
     },
-    saveUsername() {
-      this.usernameSaved = true;
+    saveUsername(username) {
+      this.self.username = username;
       Room.setSelfUsername(this.self.username);
       this.setupSocketCommunication();
     },
@@ -387,31 +357,6 @@ export default {
 .home {
   height: 100%;
   background: #9e0000;
-}
-.overlay {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: black;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-.centering-wrapper {
-  display: flex;
-  justify-content: center;
-  height: 100%;
-}
-.form-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.note {
-  color: #fff;
-}
-#username-form {
-  justify-content: center;
 }
 #mainArea {
   height: 100vh;
