@@ -114,6 +114,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "@/assets/variables.scss";
+
 .chat {
   height: 100vh;
   margin-top: auto;
@@ -121,7 +123,7 @@ export default {
 }
 .chat-card {
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4) !important;
+  background-color: $background-tint-4 !important;
 }
 .contacts_body {
   padding: 0.75rem 0 !important;
@@ -134,11 +136,11 @@ export default {
 }
 .card-header {
   font-size: 20px;
-  color: white;
+  color: $petrol-1;
   // border-radius: 15px 15 px 0 0 !important;
   text-align: center;
   border-bottom: 0 !important;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: $background-tint-2;
 }
 .card-footer {
   // border-radius: 0 0 15px 15px !important;
@@ -148,9 +150,9 @@ export default {
   align-content: center;
 }
 .type_msg {
-  background-color: rgba(0, 0, 0, 0.3) !important;
+  background-color: $background-tint-3 !important;
   border: 0 !important;
-  color: white !important;
+  color: $petrol-1;
   overflow-y: auto;
 }
 .type_msg:focus {
@@ -159,9 +161,9 @@ export default {
 }
 .send_btn {
   // border-radius: 0 15px 15px 0 !important;
-  background-color: rgba(0, 0, 0, 0.3) !important;
+  background-color: $background-tint-3 !important;
   border: 0 !important;
-  color: white !important;
+  color: $petrol-1;
   cursor: pointer;
 }
 .contacts {
@@ -174,17 +176,17 @@ export default {
   margin-bottom: 15px !important;
 }
 .active {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: $background-tint-3;
 }
 .user_img {
   height: 70px;
   width: 70px;
-  border: 1.5px solid #f5f6fa;
+  border: 1.5px solid $petrol-1;
 }
 .user_img_msg {
   height: 40px;
   width: 40px;
-  border: 1.5px solid #f5f6fa;
+  border: 1.5px solid $petrol-1;
 }
 .img_cont {
   position: relative;
@@ -194,11 +196,11 @@ export default {
 .img_cont_msg {
   height: 40px;
   width: 40px;
-  border: 1.5px solid #f5f6fa;
+  border: 1.5px solid $petrol-1;
   border-radius: 50% !important;
   display: flex;
   align-items: center;
-  color: white;
+  color: $petrol-1;
   justify-content: center;
   font-weight: bold;
   font-size: 1.2em;
@@ -210,7 +212,7 @@ export default {
   margin-top: 5px;
 }
 .video_cam span {
-  color: white;
+  color: $petrol-1;
   font-size: 20px;
   cursor: pointer;
   margin-right: 20px;
@@ -257,42 +259,6 @@ export default {
 }
 .msg_head {
   position: relative;
-}
-#action_menu_btn {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  color: white;
-  cursor: pointer;
-  font-size: 20px;
-}
-.action_menu {
-  z-index: 1;
-  position: absolute;
-  padding: 15px 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  // border-radius: 15px;
-  top: 30px;
-  right: 15px;
-  display: none;
-}
-.action_menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.action_menu ul li {
-  width: 100%;
-  padding: 10px 15px;
-  margin-bottom: 5px;
-}
-.action_menu ul li i {
-  padding-right: 10px;
-}
-.action_menu ul li:hover {
-  cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.2);
 }
 @media (max-width: 576px) {
   .contacts_card {

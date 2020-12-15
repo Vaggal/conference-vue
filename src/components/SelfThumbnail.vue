@@ -42,18 +42,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "@/assets/variables.scss";
+
 .user-badge {
   position: absolute;
   margin-left: -13px;
 }
 .active {
-  color: #fff;
+  color: $petrol-1;
 }
 .thumbnail {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: frgb(160, 160, 160);
+  color: $petrol-6;
 }
 .self-icon {
   font-size: 2.5em;

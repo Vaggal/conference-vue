@@ -354,9 +354,12 @@ export default {
 </script>
 
 <style lang="scss">
+@import "@/assets/variables.scss";
+
 .home {
   height: 100%;
-  background: #9e0000;
+  background: $petrol-5;
+  color: $petrol-1;
 }
 #mainArea {
   height: 100vh;
@@ -364,7 +367,7 @@ export default {
 }
 #video-wrapper {
   position: relative;
-  background: #000;
+  background: $background-tint-4;
   height: 90%;
 }
 #localVideoContainer {
