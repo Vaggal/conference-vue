@@ -1,7 +1,7 @@
 <template>
   <div
     class="thumbnail"
-    :class="{ active: peerActive }"
+    :class="{ active: peerActive, votable: votingEnabled && !voted }"
     @click="incrementVotes"
   >
     <div>
@@ -42,7 +42,7 @@ export default {
   watch: {
     peerVotes: function () {
       if (this.peerVotes == 0) {
-        this.votes = false;
+        this.voted = false;
       }
       this.votes = this.peerVotes;
     },
@@ -72,6 +72,9 @@ export default {
   flex-direction: column;
   align-items: center;
   color: frgb(160, 160, 160);
+}
+.votable {
+  cursor: pointer;
 }
 .peer-icon {
   font-size: 2.5em;
