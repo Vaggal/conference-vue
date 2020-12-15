@@ -1,6 +1,9 @@
 <template>
   <div class="overlay" :class="{ invisible: usernameSaved }">
     <div class="centering-wrapper">
+      <div class="header-container">
+        <h1 class="header">THESIS CHAT</h1>
+      </div>
       <div class="form-container">
         <div class="note mb-2">
           Please set a username before entering the chat
@@ -68,13 +71,29 @@ export default {
 }
 .centering-wrapper {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   height: 100%;
 }
-.form-container {
+.header-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.form-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  font-family: "Montserrat", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 0.15em $yellow;
+  user-select: none;
+  white-space: nowrap;
 }
 #username-form {
   justify-content: center;
