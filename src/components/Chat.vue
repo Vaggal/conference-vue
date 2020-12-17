@@ -20,7 +20,7 @@
           </div>
           <div
             :class="[
-              comment.userId == selfId ? 'msg_cotainer_send' : 'msg_cotainer',
+              comment.userId == selfId ? 'msg_container_send' : 'msg_container',
             ]"
           >
             <div class="msg_username_container">
@@ -224,8 +224,8 @@ export default {
   cursor: pointer;
   margin-right: 20px;
 }
-.msg_cotainer,
-.msg_cotainer_send {
+.msg_container,
+.msg_container_send {
   word-break: break-all;
   margin-top: auto;
   margin-bottom: auto;
@@ -234,11 +234,11 @@ export default {
   position: relative;
   white-space: pre-wrap;
 }
-.msg_cotainer {
+.msg_container {
   margin-left: 10px;
   background-color: $petrol-4;
 }
-.msg_cotainer_send {
+.msg_container_send {
   margin-right: 10px;
   background-color: $yellow;
 }
