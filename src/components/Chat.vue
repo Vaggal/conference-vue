@@ -4,7 +4,7 @@
       <div class="card-header msg_head">
         <span>Chat with peers</span>
       </div>
-      <div class="card-body msg_card_body">
+      <div ref="cardBody" class="card-body msg_card_body">
         <div
           v-for="(comment, key) in comments"
           :key="key"
@@ -80,10 +80,17 @@ export default {
   data() {
     return {
       message: "",
+      commentsCount: 0,
     };
   },
   watch: {},
-  updated() {},
+  updated() {
+    // If we get a new comment then scroll to bottom
+    if (this.commentsCount < this.comments.length) {
+      this.commentsCount = this.comments.length;
+      this.$refs.cardBody.scrollTop = this.$refs.cardBody.scrollHeight;
+    }
+  },
   mounted() {
     let textarea = document.querySelector("textarea");
     autosize(textarea);
