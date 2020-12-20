@@ -1,5 +1,5 @@
 <template>
-  <div class="base-timer">
+  <div class="base-timer mt-3">
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <g class="base-timer-circle">
         <circle class="base-timer-path-elapsed" cx="50" cy="50" r="45"></circle>

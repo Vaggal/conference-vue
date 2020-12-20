@@ -1,5 +1,5 @@
 <template>
-  <video :id="peerIndexId" autoplay></video>
+  <video :id="peerIndexId" class="embed-responsive-item" autoplay></video>
 </template>
 
 <script>
@@ -38,8 +38,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-video {
-  width: 100%;
-}
-</style>
+<style scoped lang="scss"></style>

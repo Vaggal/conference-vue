@@ -28,8 +28,8 @@
           :update-id="countdown.updateId"
         ></Countdown>
       </div>
-      <div id="mainArea" class="col-xs col-sm-7">
-        <div id="video-wrapper" class="row">
+      <div id="mainArea" class="col-xs col-sm-7 d-flex flex-column">
+        <div id="video-wrapper" class="row d-flex flex-grow-1">
           <div v-show="error" id="errorAlert" class="alert alert-warning">
             <span>{{ error }}</span>
           </div>
@@ -41,7 +41,9 @@
             class="col d-flex"
           >
             <div class="row flex-grow-1">
-              <div class="col-xs col-sm d-flex justify-content-center">
+              <div
+                class="col-xs col-sm d-flex justify-content-center embed-responsive"
+              >
                 <VideoPlayer
                   v-if="activePeerExists"
                   :peer-index="activePeer.id"
@@ -59,7 +61,7 @@
               <div
                 v-for="(peer, key) in peers"
                 :key="key"
-                class="col-sm d-flex justify-content-center"
+                class="col-xs col-sm d-flex justify-content-center embed-responsive m-1"
               >
                 <VideoPlayer
                   :peer-index="key"
@@ -357,18 +359,12 @@ export default {
 @import "@/assets/variables.scss";
 
 .home {
-  height: 100%;
   background: $petrol-5;
   color: $petrol-1;
-}
-#mainArea {
-  height: 100vh;
-  padding-bottom: 4px;
 }
 #video-wrapper {
   position: relative;
   background: $background-tint-4;
-  height: 90%;
 }
 #localVideoContainer {
   position: absolute;
