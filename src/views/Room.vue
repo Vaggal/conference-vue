@@ -371,6 +371,7 @@ export default {
   z-index: 1;
   width: 100%;
   height: 100%;
+  touch-action: none;
 }
 #localVideo {
   width: 160px;
@@ -378,7 +379,6 @@ export default {
   margin-left: 0.8%;
   margin-top: 0.8%;
   box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.75);
-  touch-action: none;
 }
 #errorAlert {
   position: absolute;
