@@ -1,28 +1,41 @@
 <template>
-  <div>
-    <video :id="peerIndexId" autoplay></video>
-  </div>
+  <video :id="peerIndexId" class="embed-responsive-item" autoplay></video>
 </template>
 
 <script>
 export default {
-  name: 'VideoPlayer',
+  name: "VideoPlayer",
+  props: {
+    peerIndex: {
+      type: Number,
+      default: 1000,
+    },
+    peerStream: MediaStream,
+  },
   data() {
     return {
-      peerIndexId: 'peer' + this.peerIndex
+      peerIndexId: "peer" + this.peerIndex,
     };
   },
-  props: {
-    peerIndex: Number,
-    peerStream: MediaStream
+  watch: {
+    peerIndex: function () {
+      // We need this so that it will update peerIndexId and the updated hook triggers
+      this.peerIndexId = "peer" + this.peerIndex;
+    },
+  },
+  updated() {
+    this.setVideoStream();
   },
   mounted() {
-    let peerVideoElement = document.getElementById(this.peerIndexId);
-    peerVideoElement.srcObject = this.peerStream;
-  }
+    this.setVideoStream();
+  },
+  methods: {
+    setVideoStream() {
+      let peerVideoElement = document.getElementById(this.peerIndexId);
+      peerVideoElement.srcObject = this.peerStream;
+    },
+  },
 };
 </script>
 
-<style scoped lang='scss'>
-
-</style>
+<style scoped lang="scss"></style>

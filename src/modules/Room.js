@@ -1,17 +1,13 @@
-import Io from '@/modules/Io';
-import Config from '@/modules/Config';
-import EventEmitter from 'wolfy87-eventemitter';
-
-var iceConfig = {
-  'iceServers': [{
-    'url': 'stun:stun.l.google.com:19302'
-  }]
-};
+/** @module modules/Room */
+import Io from "@/modules/Io";
+import Config from "@/modules/Config";
+import EventEmitter from "wolfy87-eventemitter";
 
 var peerConnections = {};
 var currentId;
-var roomId;
+var selfUsername;
 var localStream;
+var connected = false;
 
 function getPeerConnection(id) {
   if (peerConnections[id]) {
@@ -22,7 +18,7 @@ function getPeerConnection(id) {
 }
 
 function createNewPeerConnection(id) {
-  var peerConnection = new RTCPeerConnection(iceConfig);
+  var peerConnection = new RTCPeerConnection(Config.RTCConfiguration);
   peerConnections[id] = peerConnection;
 
   localStream.getTracks().forEach((track) => {
@@ -30,20 +26,23 @@ function createNewPeerConnection(id) {
   });
 
   peerConnection.onicecandidate = function (event) {
-    socket.emit('msg', {
+    socket.emit("msg", {
       by: currentId,
+      username: selfUsername,
       to: id,
       ice: event.candidate,
-      type: 'ice'
+      type: "ice",
     });
   };
 
   peerConnection.ontrack = function (rtcTrackEvent) {
-    api.trigger('peer.track', [{
-      id: id,
-      track: rtcTrackEvent.track
-    }]);
-  }
+    api.trigger("peer.track", [
+      {
+        id: id,
+        track: rtcTrackEvent.track,
+      },
+    ]);
+  };
 
   return peerConnection;
 }
@@ -52,67 +51,99 @@ function makeOffer(id) {
   var peerConnection = getPeerConnection(id);
 
   // Native WebRTC method: https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createOffer
-  peerConnection.createOffer({
-    mandatory: {
-      offerToReceiveVideo: true,
-      offerToReceiveAudio: true
-    }
-  }).then((sdp) => {
-    peerConnection.setLocalDescription(sdp);
-    console.log('Creating an offer for', id);
+  peerConnection
+    .createOffer({
+      mandatory: {
+        offerToReceiveVideo: true,
+        offerToReceiveAudio: true,
+      },
+    })
+    .then((sdp) => {
+      peerConnection.setLocalDescription(sdp);
+      console.log("Creating an offer for", id);
 
-    socket.emit('msg', {
-      by: currentId,
-      to: id,
-      sdp: sdp,
-      type: 'sdp-offer'
+      socket.emit("msg", {
+        by: currentId,
+        username: selfUsername,
+        to: id,
+        sdp: sdp,
+        type: "sdp-offer",
+      });
+    })
+    .catch((error) => {
+      console.log("Error making offer: ", error);
     });
-  }).catch((e) => {
-    console.log(e);
-  });
 }
 
-function handleMessage(data) {
+/**
+ * Handles messages related to SDP and ICE
+ * @param {String} data
+ */
+function handleSocketMessage(data) {
   var peerConnection = getPeerConnection(data.by);
   var rtcSessionDescription;
 
   switch (data.type) {
-    case 'sdp-offer':
+    case "sdp-offer":
       rtcSessionDescription = new RTCSessionDescription(data.sdp);
 
-      peerConnection.setRemoteDescription(rtcSessionDescription).then(() => {
-        console.log('Setting remote description by offer');
+      peerConnection
+        .setRemoteDescription(rtcSessionDescription)
+        .then(() => {
+          console.log("Setting remote description by offer");
 
-        peerConnection.createAnswer().then((sdp) => {
-          peerConnection.setLocalDescription(sdp);
+          peerConnection
+            .createAnswer()
+            .then((sdp) => {
+              peerConnection.setLocalDescription(sdp);
 
-          socket.emit('msg', {
-            by: currentId,
-            to: data.by,
-            sdp: sdp,
-            type: 'sdp-answer'
-          });
-        }).catch((e) => {
-          console.log(e);
+              socket.emit("msg", {
+                by: currentId,
+                username: selfUsername,
+                to: data.by,
+                sdp: sdp,
+                type: "sdp-answer",
+              });
+            })
+            .catch((error) => {
+              console.log("Error creating answer: ", error);
+            });
+        })
+        .catch((error) => {
+          console.log("Error setting remote description: ", error);
         });
-      }).catch((e) => {
-        console.log(e);
-      });
+
+      api.trigger("add.peer", [
+        {
+          id: data.by,
+          username: data.username,
+        },
+      ]);
 
       break;
-    case 'sdp-answer':
+    case "sdp-answer":
       rtcSessionDescription = new RTCSessionDescription(data.sdp);
 
-      peerConnection.setRemoteDescription(rtcSessionDescription).then(() => {
-        console.log('Setting remote description by answer');
-      }).catch((e) => {
-        console.error(e);
-      });
+      api.trigger("add.peer", [
+        {
+          id: data.by,
+          username: data.username,
+        },
+      ]);
+
+      peerConnection
+        .setRemoteDescription(rtcSessionDescription)
+        .then(() => {
+          console.log("Set the remote description by answer");
+        })
+        .catch((error) => {
+          console.log("Error setting remote description: ", error);
+        });
 
       break;
-    case 'ice':
+    case "ice":
       if (data.ice) {
-        console.log('Adding ice candidates');
+        console.log("Adding ice candidates");
 
         let rtcIceCandidate = new RTCIceCandidate(data.ice);
         peerConnection.addIceCandidate(rtcIceCandidate);
@@ -121,40 +152,73 @@ function handleMessage(data) {
   }
 }
 
-var socket = Io.connect(Config.SIGNALIG_SERVER_URL);
-var connected = false;
+var socket = Io.connect(Config.SignalingServerUrl);
 
-function addHandlers(socket) {
-  socket.on('peer.connected', function (params) {
-    makeOffer(params.id);
-  });
+socket.on("peer.connected", function (peer) {
+  console.log("peer.connected: ", peer);
+  makeOffer(peer.id);
+});
 
-  socket.on('peer.disconnected', function (data) {
-    api.trigger('peer.disconnected', [data]);
-  });
+socket.on("peer.disconnected", function (peer) {
+  api.trigger("peer.disconnected", [peer]);
+});
 
-  socket.on('msg', function (data) {
-    handleMessage(data);
-  });
-}
+socket.on("msg", function (data) {
+  handleSocketMessage(data);
+});
+socket.on("comment", function (comment) {
+  api.trigger("comment", [comment]);
+});
 
+socket.on("votes.update", function (votes) {
+  api.trigger("votes.update", [votes]);
+});
+
+socket.on("conversation.type.set", function (conversation) {
+  api.trigger("conversation.type.set", [conversation]);
+});
+
+socket.on("active.peer", function (peerId) {
+  api.trigger("active.peer", [peerId]);
+});
+
+socket.on("time.left", function (secondsLeft) {
+  api.trigger("time.left", [secondsLeft]);
+});
+
+/*
+  The api variable is a way for Room.vue and Room.js to communicate.
+  Room.js is the only place that we have access to the socket.
+  In this way when we need to make a change in the view based on an event from a socket we can trigger in Room.js an event
+  that Room.vue will listen to and apply the change to the view
+*/
 var api = {
-  joinRoom: function (r) {
-    if (!connected) {
-      socket.emit('init', {
-        room: r
-      }, function (roomid, id) {
-        currentId = id;
-        roomId = roomid;
-      });
-      connected = true;
-    }
+  joinRoom: function (room) {
+    let initPromise = new Promise((resolve, reject) => {
+      if (!connected) {
+        socket.emit(
+          "init",
+          {
+            room: room,
+          },
+          function (roomid, id) {
+            resolve();
+            currentId = id;
+          }
+        );
+        connected = true;
+      } else {
+        reject();
+      }
+    });
+
+    return initPromise;
   },
   createRoom: function () {
-    let initPromise = new Promise((resolve, reject) => {
-      socket.emit('init', null, function (roomid, id) {
+    let initPromise = new Promise((resolve) => {
+      socket.emit("init", null, function (roomid, id, conversation) {
+        api.trigger("conversation.type.set", [conversation]);
         resolve(roomid);
-        roomId = roomid;
         currentId = id;
         connected = true;
       });
@@ -164,12 +228,38 @@ var api = {
   },
   init: function (stream) {
     localStream = stream;
-  }
+  },
+  getSelfId: function () {
+    return currentId;
+  },
+  setSelfUsername: function (username) {
+    selfUsername = username;
+  },
 };
 
 var eventEmitter = new EventEmitter();
-Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter))
+Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter));
 
-addHandlers(socket);
+api.on("votes.increment", function (peerId) {
+  socket.emit("votes.increment", {
+    id: peerId,
+  });
+});
+
+api.on("conversation.type.selected", function (id, type) {
+  socket.emit("conversation.type.selected", {
+    by: id,
+    conversation: {
+      type: type,
+    },
+  });
+});
+api.on("new-comment", function (message, id, username) {
+  socket.emit("new-comment", {
+    message: message,
+    id: id,
+    username: username,
+  });
+});
 
 export default api;
