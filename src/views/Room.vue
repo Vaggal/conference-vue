@@ -84,7 +84,7 @@
                   :peer-id="peer.id"
                   :peer-username="peer.username"
                   :peer-active="peer.active"
-                  :peer-votes="votes[peer.id]"
+                  :peer-votes="getPeerVotes(peer.id)"
                   @votes-increment="incrementVotes($event)"
                 ></PeerThumbnail>
               </div>
@@ -95,7 +95,7 @@
               :voting-enabled="conversationIsSet() && !conversationIsLoose()"
               :self-username="self.username"
               :self-active="self.active"
-              :self-votes="votes[self.id]"
+              :self-votes="getPeerVotes(self.id)"
             ></SelfThumbnail>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default {
       },
       peers: [],
       activePeer: {},
-      votes: {},
+      votes: [],
       conversation: {
         type: "",
       },
@@ -237,6 +237,15 @@ export default {
       this.self.username = username;
       Room.setSelfUsername(this.self.username);
       this.setupSocketCommunication();
+    },
+    getPeerVotes(peerId) {
+      let votesObj = this.votes.find((peerVotes) => peerVotes.id === peerId);
+
+      let votesCount = 0;
+      if (votesObj) {
+        votesCount = votesObj.votes;
+      }
+      return votesCount;
     },
     setupSocketCommunication() {
       if (!window.RTCPeerConnection || !navigator.getUserMedia) {
