@@ -200,6 +200,7 @@ var api = {
           "init",
           {
             room: room,
+            username: selfUsername,
           },
           function (roomid, id) {
             resolve();
@@ -216,12 +217,18 @@ var api = {
   },
   createRoom: function () {
     let initPromise = new Promise((resolve) => {
-      socket.emit("init", null, function (roomid, id, conversation) {
-        api.trigger("conversation.type.set", [conversation]);
-        resolve(roomid);
-        currentId = id;
-        connected = true;
-      });
+      socket.emit(
+        "init",
+        {
+          username: selfUsername,
+        },
+        function (roomid, id, conversation) {
+          api.trigger("conversation.type.set", [conversation]);
+          resolve(roomid);
+          currentId = id;
+          connected = true;
+        }
+      );
     });
 
     return initPromise;
