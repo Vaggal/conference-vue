@@ -16,6 +16,7 @@
           <div class="form-group">
             <input
               id="username-input"
+              ref="usernameInput"
               v-model="username"
               type="text"
               class="form-control"
@@ -46,7 +47,7 @@ export default {
     };
   },
   mounted() {
-    document.getElementById("username-input").focus();
+    this.$refs.usernameInput.focus();
   },
   methods: {
     saveUsername() {

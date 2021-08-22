@@ -34,7 +34,7 @@
             <span>{{ error }}</span>
           </div>
           <div id="localVideoContainer">
-            <video id="localVideo" autoplay muted></video>
+            <video id="localVideo" ref="localVideo" autoplay muted></video>
           </div>
           <div
             v-if="conversationIsSet() && !conversationIsLoose()"
@@ -162,9 +162,7 @@ export default {
   },
   beforeMount() {},
   mounted() {
-    document.getElementById("username-input").focus();
-    let localVideoElement = document.getElementById("localVideo");
-    InteractiveVideo.setup(localVideoElement);
+    InteractiveVideo.setup(this.$refs.localVideo);
   },
   methods: {
     isNumeric(value) {
@@ -281,8 +279,7 @@ export default {
               });
           }
 
-          let localVideo = document.getElementById("localVideo");
-          localVideo.srcObject = this.self.stream;
+          this.$refs.localVideo.srcObject = this.self.stream;
         })
         .catch((error) => {
           console.log("Error getting local video stream: ", error);

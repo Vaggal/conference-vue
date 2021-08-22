@@ -93,7 +93,6 @@ export default {
     }
   },
   mounted() {
-    // let textarea = document.querySelector("textarea");
     autosize(this.$refs.textarea);
     this.$refs.textarea.addEventListener("keydown", (e) => {
       if (!e.ctrlKey && e.keyCode === 13) {
