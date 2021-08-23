@@ -42,7 +42,12 @@
           >
             <div class="row flex-grow-1">
               <div
-                class="col-xs col-sm d-flex justify-content-center embed-responsive"
+                class="
+                  col-xs col-sm
+                  d-flex
+                  justify-content-center
+                  embed-responsive
+                "
               >
                 <VideoPlayer
                   v-if="activePeerExists"
@@ -61,7 +66,13 @@
               <div
                 v-for="(peer, key) in peers"
                 :key="key"
-                class="col-xs col-sm d-flex justify-content-center embed-responsive m-1"
+                class="
+                  col-xs col-sm
+                  d-flex
+                  justify-content-center
+                  embed-responsive
+                  m-1
+                "
               >
                 <VideoPlayer
                   :peer-index="key"
