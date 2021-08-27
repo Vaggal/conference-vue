@@ -1,4 +1,3 @@
-/** @module modules/Room */
 import Io from "@/modules/Io";
 import Config from "@/modules/Config";
 import EventEmitter from "wolfy87-eventemitter";
@@ -152,7 +151,7 @@ function handleSocketMessage(data) {
   }
 }
 
-var socket = Io.connect(Config.SignalingServerUrl);
+var socket = Io(Config.SignalingServerUrl);
 
 socket.on("peer.connected", function (peer) {
   console.log("peer.connected: ", peer);
