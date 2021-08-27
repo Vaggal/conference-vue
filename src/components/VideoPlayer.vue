@@ -20,7 +20,9 @@ export default {
       this.setVideoStream();
     },
   },
-
+  mounted() {
+    this.setVideoStream();
+  },
   methods: {
     setVideoStream() {
       this.$refs.peerVideo.srcObject = this.peerStream;
