@@ -1,7 +1,7 @@
 {
   "name": "conference-vue",
   "description": "Front-End for the conference project",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
