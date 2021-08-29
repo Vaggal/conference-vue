@@ -9,35 +9,35 @@ You should have node 15+ installed locally.
 
 For production the resulting build from this project should be placed in the public folder of the conference project so that they can be deployed together.
 
-## Provided commands
+### Provided commands
 
 There are several scripts that provide an easier way to execute some tasks in the project.
 
-### Install the packages
+#### Install the packages
 
 ```bash
 npm install
 ```
 
-### Compile and hot-reload for development
+#### Compile and hot-reload for development
 
 ```bash
 npm run serve
 ```
 
-### Compile and minify for production
+#### Compile and minify for production
 
 ```bash
 npm run build
 ```
 
-### Run the unit tests
+#### Run the unit tests
 
 ```bash
 npm run test:unit
 ```
 
-### Run the e2e tests
+#### Run the e2e tests
 
 ```bash
 npm run test:e2e
@@ -45,13 +45,13 @@ npm run test:e2e
 
 to enable cypress recording, a record key should be provided through an environment variable named CYPRESS_RECORD_KEY
 
-### Lint the files
+#### Lint the files
 
 ```bash
 npm run lint
 ```
 
-### Format all the files
+#### Format all the files
 
 ```bash
 npm run prettier
