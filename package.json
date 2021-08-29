@@ -1,5 +1,6 @@
 {
   "name": "conference-vue",
+  "description": "Front-End for the conference project",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +9,10 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e --headless --record",
     "lint": "vue-cli-service lint",
-    "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "prettier": "prettier --write ."
+  },
+  "engines": {
+    "node": ">= 15"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
