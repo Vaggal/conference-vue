@@ -1,5 +1,5 @@
 <template>
-  <video :id="peerIndexId" class="embed-responsive-item" autoplay></video>
+  <video ref="peerVideo" class="embed-responsive-item" autoplay></video>
 </template>
 
 <script>
@@ -13,26 +13,19 @@ export default {
     peerStream: MediaStream,
   },
   data() {
-    return {
-      peerIndexId: "peer" + this.peerIndex,
-    };
+    return {};
   },
   watch: {
     peerIndex: function () {
-      // We need this so that it will update peerIndexId and the updated hook triggers
-      this.peerIndexId = "peer" + this.peerIndex;
+      this.setVideoStream();
     },
-  },
-  updated() {
-    this.setVideoStream();
   },
   mounted() {
     this.setVideoStream();
   },
   methods: {
     setVideoStream() {
-      let peerVideoElement = document.getElementById(this.peerIndexId);
-      peerVideoElement.srcObject = this.peerStream;
+      this.$refs.peerVideo.srcObject = this.peerStream;
     },
   },
 };

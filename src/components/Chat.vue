@@ -46,6 +46,7 @@
       <div class="card-footer">
         <div class="input-group">
           <textarea
+            ref="textarea"
             v-model="message"
             class="form-control type_msg"
             placeholder="Write your message..."
@@ -92,9 +93,8 @@ export default {
     }
   },
   mounted() {
-    let textarea = document.querySelector("textarea");
-    autosize(textarea);
-    textarea.addEventListener("keydown", (e) => {
+    autosize(this.$refs.textarea);
+    this.$refs.textarea.addEventListener("keydown", (e) => {
       if (!e.ctrlKey && e.keyCode === 13) {
         e.preventDefault();
         this.sendComment();

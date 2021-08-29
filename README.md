@@ -1,35 +1,58 @@
-# hello-world
+# conference-vue
 
-## Project setup
+Front-End for the conference project
 
-```
+## Running the project
+
+In order for the project to work the conference back-end needs to run so that there is a web server and a socket server running locally.  
+You should have node 15+ installed locally.
+
+For production the resulting build from this project should be placed in the public folder of the conference project so that they can be deployed together.
+
+### Provided commands
+
+There are several scripts that provide an easier way to execute some tasks in the project.
+
+#### Install the packages
+
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
+#### Compile and hot-reload for development
 
-```
+```bash
 npm run serve
 ```
 
-### Compiles and minifies for production
+#### Compile and minify for production
 
-```
+```bash
 npm run build
 ```
 
-### Run your tests
+#### Run the unit tests
 
-```
-npm run test
+```bash
+npm run test:unit
 ```
 
-### Lints and fixes files
+#### Run the e2e tests
 
+```bash
+npm run test:e2e
 ```
+
+to enable cypress recording, a record key should be provided through an environment variable named CYPRESS_RECORD_KEY
+
+#### Lint the files
+
+```bash
 npm run lint
 ```
 
-### Customize configuration
+#### Format all the files
 
-See [Configuration Reference](https://cli.vuejs.org/config/).
+```bash
+npm run prettier
+```

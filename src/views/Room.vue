@@ -34,7 +34,7 @@
             <span>{{ error }}</span>
           </div>
           <div id="localVideoContainer">
-            <video id="localVideo" autoplay muted></video>
+            <video id="localVideo" ref="localVideo" autoplay muted></video>
           </div>
           <div
             v-if="conversationIsSet() && !conversationIsLoose()"
@@ -42,7 +42,12 @@
           >
             <div class="row flex-grow-1">
               <div
-                class="col-xs col-sm d-flex justify-content-center embed-responsive"
+                class="
+                  col-xs col-sm
+                  d-flex
+                  justify-content-center
+                  embed-responsive
+                "
               >
                 <VideoPlayer
                   v-if="activePeerExists"
@@ -61,7 +66,13 @@
               <div
                 v-for="(peer, key) in peers"
                 :key="key"
-                class="col-xs col-sm d-flex justify-content-center embed-responsive m-1"
+                class="
+                  col-xs col-sm
+                  d-flex
+                  justify-content-center
+                  embed-responsive
+                  m-1
+                "
               >
                 <VideoPlayer
                   :peer-index="key"
@@ -162,9 +173,7 @@ export default {
   },
   beforeMount() {},
   mounted() {
-    document.getElementById("username-input").focus();
-    let localVideoElement = document.getElementById("localVideo");
-    InteractiveVideo.setup(localVideoElement);
+    InteractiveVideo.setup(this.$refs.localVideo);
   },
   methods: {
     isNumeric(value) {
@@ -281,8 +290,7 @@ export default {
               });
           }
 
-          let localVideo = document.getElementById("localVideo");
-          localVideo.srcObject = this.self.stream;
+          this.$refs.localVideo.srcObject = this.self.stream;
         })
         .catch((error) => {
           console.log("Error getting local video stream: ", error);
