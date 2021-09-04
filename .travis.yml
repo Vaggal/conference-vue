@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+    - 15
+cache:
+    directories:
+        - ~/.npm
+        - ~/.cache
+branches:
+    only:
+        - master
+        - develop
+script:
+    - npm run test:unit
+    - npm run test:e2e
+after_success:
+    - npm run build

@@ -1,5 +1,7 @@
 # conference-vue
 
+[![Build Status](https://app.travis-ci.com/Vaggal/conference-vue.svg?branch=master)](https://app.travis-ci.com/Vaggal/conference-vue)
+
 Front-End for the conference project
 
 ## Running the project
