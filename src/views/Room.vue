@@ -29,7 +29,7 @@
         ></Countdown>
       </div>
       <div id="mainArea" class="col-xs col-sm-7 d-flex flex-column">
-        <div id="video-wrapper" class="row d-flex flex-grow-1">
+        <div id="videoWrapper" class="row d-flex flex-grow-1">
           <div v-show="error" id="errorAlert" class="alert alert-warning">
             <span>{{ error }}</span>
           </div>
@@ -111,7 +111,7 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-3">
+      <div id="chatArea" class="col-sm-3">
         <Chat
           :comments="comments"
           :self-id="self.id"
@@ -379,9 +379,17 @@ export default {
   background: $petrol-5;
   color: $petrol-1;
 }
-#video-wrapper {
+#videoWrapper {
   position: relative;
+  border-bottom: solid 1px $background-tint-4;
+}
+#typeArea {
   background: $background-tint-4;
+  border-radius: 0.25rem;
+}
+#chatArea {
+  padding-left: 0;
+  padding-right: 0;
 }
 #localVideoContainer {
   position: absolute;

@@ -151,6 +151,7 @@ export default {
 }
 .card-footer {
   // border-radius: 0 0 15px 15px !important;
+  background-color: $background-tint-1;
   border-top: 0 !important;
 }
 .container {
