@@ -24,13 +24,15 @@
               placeholder="Enter username"
             />
           </div>
-          <button
-            type="button"
-            class="btn btn-primary ml-1"
-            @click="saveUsername()"
-          >
-            Save
-          </button>
+          <div class="form-group">
+            <button
+              type="button"
+              class="btn btn-primary ml-1"
+              @click="saveUsername()"
+            >
+              Save
+            </button>
+          </div>
         </form>
       </div>
     </div>
