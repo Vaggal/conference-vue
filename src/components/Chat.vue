@@ -158,7 +158,7 @@ export default {
   align-content: center;
 }
 .type_msg {
-  background-color: $background-tint-3 !important;
+  background-color: $background-tint-2 !important;
   border: 0 !important;
   color: $petrol-1;
   overflow-y: auto;
@@ -169,7 +169,7 @@ export default {
 }
 .send_btn {
   // border-radius: 0 15px 15px 0 !important;
-  background-color: $background-tint-3 !important;
+  background-color: $background-tint-2 !important;
   border: 0 !important;
   color: $yellow;
   cursor: pointer;
