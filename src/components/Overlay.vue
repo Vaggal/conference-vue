@@ -10,10 +10,10 @@
         </div>
         <form
           id="username-form"
-          class="form-inline"
+          class="row row-cols-lg-auto g-3 align-items-center"
           @submit.prevent="saveUsername()"
         >
-          <div class="form-group">
+          <div class="col-12">
             <input
               id="username-input"
               ref="usernameInput"
@@ -24,10 +24,10 @@
               placeholder="Enter username"
             />
           </div>
-          <div class="form-group">
+          <div class="col-12">
             <button
               type="button"
-              class="btn btn-primary ml-1"
+              class="btn btn-primary"
               @click="saveUsername()"
             >
               Save

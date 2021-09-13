@@ -6,7 +6,10 @@
   >
     <div>
       <font-awesome-icon icon="user" class="peer-icon" />
-      <span v-if="votingEnabled" class="user-badge badge badge-pill badge-info">
+      <span
+        v-if="votingEnabled"
+        class="user-badge badge rounded-pill badge-info"
+      >
         {{ votes }}
       </span>
     </div>

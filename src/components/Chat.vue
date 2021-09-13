@@ -51,11 +51,9 @@
             class="form-control type_msg"
             placeholder="Write your message..."
           ></textarea>
-          <div class="input-group-append" @click="sendComment($event)">
-            <span class="input-group-text send_btn">
-              <font-awesome-icon icon="location-arrow" />
-            </span>
-          </div>
+          <span class="input-group-text send_btn" @click="sendComment($event)">
+            <font-awesome-icon icon="location-arrow" />
+          </span>
         </div>
       </div>
     </div>
