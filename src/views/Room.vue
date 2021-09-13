@@ -3,11 +3,13 @@
     <div class="row">
       <div id="typeArea" class="col-sm-2">
         <form>
-          <div class="form-group align-items-center text-center">
-            <label for="conversationType">Conversation Type</label>
+          <div class="align-items-center text-center">
+            <label class="form-label" for="conversationType"
+              >Conversation Type</label
+            >
             <select
               id="conversationType"
-              class="custom-select mr-sm-2"
+              class="form-select custom-select"
               :disabled="conversationIsSet()"
               @change="conversationTypeSelected($event)"
             >
@@ -130,7 +132,6 @@ import SelfThumbnail from "@/components/SelfThumbnail.vue";
 import Countdown from "@/components/Countdown.vue";
 import Chat from "@/components/Chat.vue";
 
-// import $ from 'jquery';
 import "bootstrap";
 import { v4 as uuidv4 } from "uuid";
 
