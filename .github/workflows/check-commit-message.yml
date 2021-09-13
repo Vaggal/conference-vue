@@ -8,7 +8,7 @@ jobs:
       - name: Check Commit Prefix
         uses: GsActions/commit-message-checker@v1
         with:
-            pattern: '(build|ci|docs|feat|fix|perf|refactor|test): (.*)'
+            pattern: '((build|ci|docs|feat|fix|perf|refactor|test): |Merge Branch )(.*)'
             error: 'The commit message does not contain a type that is included in the Angular guidelines. Check https://github.com/angular/angular/blob/master/CONTRIBUTING.md#type'
             excludeDescription: 'true'
             excludeTitle: 'true'
