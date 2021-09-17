@@ -181,7 +181,7 @@ export default {
       return /^\d+$/.test(value);
     },
     incrementVotes(peerId) {
-      Room.trigger("votes.increment", [peerId]);
+      Room.emit("votes.increment", peerId, this);
     },
     activePeerExists() {
       return Object.keys(this.activePeer).length > 0;
@@ -205,10 +205,11 @@ export default {
     },
     conversationTypeSelected(event) {
       if (event.target.value === "byturn" || event.target.value === "loose") {
-        Room.trigger("conversation.type.selected", [
+        Room.emit(
+          "conversation.type.selected",
           this.self.id,
-          event.target.value,
-        ]);
+          event.target.value
+        );
       }
     },
     activatePeer(peerToActivate) {
@@ -241,7 +242,7 @@ export default {
       }
     },
     sendComment(message) {
-      Room.trigger("new-comment", [message, this.self.id, this.self.username]);
+      Room.emit("new-comment", message, this.self.id, this.self.username);
     },
     saveUsername(username) {
       this.self.username = username;

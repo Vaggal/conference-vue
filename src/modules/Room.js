@@ -1,6 +1,6 @@
 import Io from "@/modules/Io";
 import Config from "@/modules/Config";
-import EventEmitter from "wolfy87-eventemitter";
+import EventEmitter from "eventemitter3";
 
 var peerConnections = {};
 var currentId;
@@ -35,12 +35,10 @@ function createNewPeerConnection(id) {
   };
 
   peerConnection.ontrack = function (rtcTrackEvent) {
-    api.trigger("peer.track", [
-      {
-        id: id,
-        track: rtcTrackEvent.track,
-      },
-    ]);
+    api.emit("peer.track", {
+      id: id,
+      track: rtcTrackEvent.track,
+    });
   };
 
   return peerConnection;
@@ -112,23 +110,19 @@ function handleSocketMessage(data) {
           console.log("Error setting remote description: ", error);
         });
 
-      api.trigger("add.peer", [
-        {
-          id: data.by,
-          username: data.username,
-        },
-      ]);
+      api.emit("add.peer", {
+        id: data.by,
+        username: data.username,
+      });
 
       break;
     case "sdp-answer":
       rtcSessionDescription = new RTCSessionDescription(data.sdp);
 
-      api.trigger("add.peer", [
-        {
-          id: data.by,
-          username: data.username,
-        },
-      ]);
+      api.emit("add.peer", {
+        id: data.by,
+        username: data.username,
+      });
 
       peerConnection
         .setRemoteDescription(rtcSessionDescription)
@@ -154,35 +148,34 @@ function handleSocketMessage(data) {
 var socket = Io(Config.SignalingServerUrl);
 
 socket.on("peer.connected", function (peer) {
-  console.log("peer.connected: ", peer);
   makeOffer(peer.id);
 });
 
 socket.on("peer.disconnected", function (peer) {
-  api.trigger("peer.disconnected", [peer]);
+  api.emit("peer.disconnected", peer);
 });
 
 socket.on("msg", function (data) {
   handleSocketMessage(data);
 });
 socket.on("comment", function (comment) {
-  api.trigger("comment", [comment]);
+  api.emit("comment", comment);
 });
 
 socket.on("votes.update", function (votes) {
-  api.trigger("votes.update", [votes]);
+  api.emit("votes.update", votes);
 });
 
 socket.on("conversation.type.set", function (conversation) {
-  api.trigger("conversation.type.set", [conversation]);
+  api.emit("conversation.type.set", conversation);
 });
 
 socket.on("active.peer", function (peerId) {
-  api.trigger("active.peer", [peerId]);
+  api.emit("active.peer", peerId);
 });
 
 socket.on("time.left", function (secondsLeft) {
-  api.trigger("time.left", [secondsLeft]);
+  api.emit("time.left", secondsLeft);
 });
 
 /*
@@ -191,60 +184,60 @@ socket.on("time.left", function (secondsLeft) {
   In this way when we need to make a change in the view based on an event from a socket we can trigger in Room.js an event
   that Room.vue will listen to and apply the change to the view
 */
-var api = {
-  joinRoom: function (room) {
-    let initPromise = new Promise((resolve, reject) => {
-      if (!connected) {
-        socket.emit(
-          "init",
-          {
-            room: room,
-            username: selfUsername,
-          },
-          function (roomid, id) {
-            resolve();
-            currentId = id;
-          }
-        );
-        connected = true;
-      } else {
-        reject();
-      }
-    });
+let api = new EventEmitter();
 
-    return initPromise;
-  },
-  createRoom: function () {
-    let initPromise = new Promise((resolve) => {
+api.joinRoom = (room) => {
+  let initPromise = new Promise((resolve, reject) => {
+    if (!connected) {
       socket.emit(
         "init",
         {
+          room: room,
           username: selfUsername,
         },
-        function (roomid, id, conversation) {
-          api.trigger("conversation.type.set", [conversation]);
-          resolve(roomid);
+        function (roomid, id) {
+          resolve();
           currentId = id;
-          connected = true;
         }
       );
-    });
+      connected = true;
+    } else {
+      reject();
+    }
+  });
 
-    return initPromise;
-  },
-  init: function (stream) {
-    localStream = stream;
-  },
-  getSelfId: function () {
-    return currentId;
-  },
-  setSelfUsername: function (username) {
-    selfUsername = username;
-  },
+  return initPromise;
+};
+api.createRoom = () => {
+  let initPromise = new Promise((resolve) => {
+    socket.emit(
+      "init",
+      {
+        username: selfUsername,
+      },
+      function (roomid, id, conversation) {
+        api.emit("conversation.type.set", conversation);
+        resolve(roomid);
+        currentId = id;
+        connected = true;
+      }
+    );
+  });
+
+  return initPromise;
+};
+api.init = (stream) => {
+  localStream = stream;
+};
+api.getSelfId = () => {
+  return currentId;
+};
+api.setSelfUsername = (username) => {
+  selfUsername = username;
 };
 
-var eventEmitter = new EventEmitter();
-Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter));
+// var eventEmitter = new EventEmitter();
+// Object.setPrototypeOf(api, Object.getPrototypeOf(eventEmitter));
 
 api.on("votes.increment", function (peerId) {
   socket.emit("votes.increment", {
