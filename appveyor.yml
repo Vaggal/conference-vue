@@ -1,5 +1,7 @@
 environment:
-  nodejs_version: "15"
+  matrix:
+    - nodejs_version: "16"
+    - nodejs_version: "15"
 
 # Install scripts. (runs after repo cloning)
 install:
@@ -18,4 +20,7 @@ test_script:
   - npm run test:e2e
 
 build_script:
-    - npm run build
+  - npm run build
+
+cache:
+  - '%APPDATA%\npm-cache'
