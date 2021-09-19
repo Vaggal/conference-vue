@@ -1,6 +1,7 @@
 # conference-vue
 
 [![Build Status](https://app.travis-ci.com/Vaggal/conference-vue.svg?branch=master)](https://app.travis-ci.com/Vaggal/conference-vue)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/conference-vue?svg=true)](https://ci.appveyor.com/api/projects/status/github/conference-vue?svg=true)
 
 Front-End for the conference project
 
