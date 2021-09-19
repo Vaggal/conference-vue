@@ -4,7 +4,7 @@
       <font-awesome-icon icon="user-alt" class="self-icon" />
       <span
         v-if="votingEnabled"
-        class="user-badge badge badge-pill badge-info"
+        class="user-badge badge rounded-pill badge-info"
         >{{ votes }}</span
       >
     </div>

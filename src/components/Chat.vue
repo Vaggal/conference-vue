@@ -51,11 +51,9 @@
             class="form-control type_msg"
             placeholder="Write your message..."
           ></textarea>
-          <div class="input-group-append" @click="sendComment($event)">
-            <span class="input-group-text send_btn">
-              <font-awesome-icon icon="location-arrow" />
-            </span>
-          </div>
+          <span class="input-group-text send_btn" @click="sendComment($event)">
+            <font-awesome-icon icon="location-arrow" />
+          </span>
         </div>
       </div>
     </div>
@@ -158,7 +156,7 @@ export default {
   align-content: center;
 }
 .type_msg {
-  background-color: $background-tint-3 !important;
+  background-color: $background-tint-2 !important;
   border: 0 !important;
   color: $petrol-1;
   overflow-y: auto;
@@ -169,7 +167,7 @@ export default {
 }
 .send_btn {
   // border-radius: 0 15px 15px 0 !important;
-  background-color: $background-tint-3 !important;
+  background-color: $background-tint-2 !important;
   border: 0 !important;
   color: $yellow;
   cursor: pointer;
