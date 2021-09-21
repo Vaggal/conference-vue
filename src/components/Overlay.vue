@@ -10,10 +10,10 @@
         </div>
         <form
           id="username-form"
-          class="row row-cols-lg-auto g-3 align-items-center"
+          class="row row-cols-auto g-3"
           @submit.prevent="saveUsername()"
         >
-          <div class="col-12">
+          <div class="col">
             <input
               id="username-input"
               ref="usernameInput"
@@ -24,7 +24,7 @@
               placeholder="Enter username"
             />
           </div>
-          <div class="col-12">
+          <div class="col">
             <button
               type="button"
               class="btn btn-primary"
